@@ -575,6 +575,22 @@ body.page-mode .nav{border-bottom-color:transparent !important;box-shadow:none !
 .about-step-text h4{font-size:14px;font-weight:700;color:var(--gray-800);margin:0 0 2px}
 .about-step-text p{font-size:13px;color:var(--gray-500);margin:0;line-height:1.4}
 
+/* ===== NUESTRA TECNOLOGÍA ===== */
+.tech-section{padding:32px 20px;max-width:600px;margin:0 auto}
+.tech-section h2{font-size:20px;font-weight:800;color:var(--gray-800);margin:0 0 6px;text-align:center}
+.tech-section .section-line{width:40px;height:3px;background:var(--orange);border-radius:2px;margin:0 auto 20px}
+.tech-desktop-img{display:none}
+.tech-desktop-img img{width:100%;height:auto;border-radius:16px}
+.tech-mobile{display:block}
+.tech-mobile-car{text-align:center;margin-bottom:24px}
+.tech-mobile-car img{width:90%;max-width:400px;height:auto}
+.tech-list{display:flex;flex-direction:column;gap:20px}
+.tech-item{display:flex;gap:14px;align-items:flex-start}
+.tech-item-icon{width:48px;height:48px;border-radius:12px;background:rgba(0,119,255,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tech-item-icon img{width:32px;height:32px;object-fit:contain}
+.tech-item-text h3{font-size:15px;font-weight:700;color:var(--gray-800);margin:0 0 3px}
+.tech-item-text p{font-size:13px;color:var(--gray-500);margin:0;line-height:1.5}
+
 /* ===== UBICACIÓN PAGE ===== */
 .location-hero{background:linear-gradient(145deg,#001a3d 0%,#003080 50%,#004db3 100%);padding:48px 20px 40px;text-align:center;position:relative;overflow:hidden;margin-top:-1px}
 .location-hero::before{content:'';position:absolute;top:-40%;right:-20%;width:70%;height:180%;background:radial-gradient(ellipse,rgba(0,207,255,.1) 0%,transparent 70%);pointer-events:none}
@@ -1156,6 +1172,9 @@ body.page-mode .nav{border-bottom-color:transparent !important;box-shadow:none !
   .careers-perks { grid-template-columns: repeat(4,1fr); }
   .location-map-wrap iframe { height: 360px; }
   .loyalty-card-visual .lc-stamps { grid-template-columns: repeat(10,1fr); }
+  .tech-section { max-width: 900px; }
+  .tech-desktop-img { display: block; text-align: center; }
+  .tech-mobile { display: none; }
 }
 
 </style>
@@ -1642,7 +1661,60 @@ body.page-mode .nav{border-bottom-color:transparent !important;box-shadow:none !
     </div>
   </div>
 
-  <!-- Placeholder: Aquí se integrará la imagen/diagrama de "Nuestra Tecnología" -->
+  <!-- ===== NUESTRA TECNOLOGÍA ===== -->
+  <div class="tech-section">
+    <h2>Nuestra Tecnología</h2>
+    <div class="section-line"></div>
+
+    <!-- Desktop: imagen con etiquetas -->
+    <div class="tech-desktop-img">
+      <img src="mclarendesktop.png" alt="Tecnología de lavado Senza — Espuma Activa, Supreme Wax, Ultimate Shine Protection, Lavado de Ruedas y Lavado de Chasis">
+    </div>
+
+    <!-- Mobile: imagen del auto + listado con iconos -->
+    <div class="tech-mobile">
+      <div class="tech-mobile-car">
+        <img src="mclaren_mobile.jpg" alt="Tecnología de lavado Senza">
+      </div>
+      <div class="tech-list">
+        <div class="tech-item">
+          <div class="tech-item-icon"><img src="iconoespumaactiva.png" alt="Espuma Activa"></div>
+          <div class="tech-item-text">
+            <h3>Espuma Activa</h3>
+            <p>Espuma de alta densidad que envuelve tu vehículo, desprendiendo mugre y contaminantes sin dañar la pintura.</p>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-icon"><img src="iconolavadoruedas.png" alt="Lavado de Ruedas"></div>
+          <div class="tech-item-text">
+            <h3>Lavado de Ruedas</h3>
+            <p>Elimina el polvo de frenos y la suciedad acumulada en rines y llantas.</p>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-icon"><img src="iconolavadochasis.png" alt="Lavado de Chasis"></div>
+          <div class="tech-item-text">
+            <h3>Lavado de Chasis</h3>
+            <p>Limpia la parte inferior del vehículo, eliminando sal, barro y residuos que causan corrosión.</p>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-icon"><img src="iconosupremewax.png" alt="Supreme Wax"></div>
+          <div class="tech-item-text">
+            <h3>Supreme Wax</h3>
+            <p>Cera protectora que realza el brillo y crea una barrera contra los elementos.</p>
+          </div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-item-icon" style="background:rgba(255,59,0,.06)"><img src="iconoultimateshine.png" alt="Ultimate Shine Protection"></div>
+          <div class="tech-item-text">
+            <h3>Ultimate Shine Protection</h3>
+            <p>Protección avanzada que repele el agua, resiste rayos UV y mantiene un brillo duradero con efecto hidrofóbico.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
