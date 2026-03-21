@@ -303,12 +303,12 @@ body{font-family:'Exo 2',sans-serif;background:var(--white);color:var(--gray-900
 .plan-orig-col{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;margin-right:6px;padding-right:10px;border-right:1px solid var(--gray-200)}
 .plan-orig-col .orig-label{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--gray-400)}
 .plan-orig-col .orig-price{font-size:14px;font-weight:700;color:var(--gray-400);line-height:1.2;text-decoration:line-through}
-.plan-dyn-col{display:flex;flex-direction:column;align-items:center}
+.plan-dyn-col{display:flex;flex-direction:column;align-items:flex-end}
 .plan-dyn-col .plan-price-row{display:flex;align-items:baseline;gap:4px}
-.plan-dyn-col .plan-price{font-size:28px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;min-width:52px;text-align:right}
+.plan-dyn-col .plan-price{font-size:28px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;min-width:70px;text-align:right}
 .plan-dyn-col .plan-price sup{font-size:14px}
-.plan-dyn-col .plan-per{font-size:10px;color:var(--gray-500)}
-.plan-dyn-col .plan-unlimited{font-size:10px;font-weight:800;color:var(--gray-500);line-height:1;margin-top:1px}
+.plan-dyn-col .plan-per{font-size:10px;color:var(--gray-500);text-align:right}
+.plan-dyn-col .plan-unlimited{font-size:10px;font-weight:800;color:var(--gray-500);line-height:1;margin-top:1px;text-align:right}
 
 /* Inline desglose inside plan body */
 .plan-desglose{margin-top:0;background:var(--gray-50);border-radius:0 0 10px 10px;padding:14px;border-top:1px dashed var(--gray-200)}
@@ -923,6 +923,26 @@ body.page-mode .nav{border-bottom-color:transparent !important;box-shadow:none !
 .mt-16{margin-top:16px}
 .text-center{text-align:center}
 .text-small{font-size:11px;color:var(--gray-500);line-height:1.4}
+
+/* ===== SMALL SCREENS — Personal ≤340px ===== */
+@media (max-width: 340px) {
+  #personalPlans .why-row .wr-result { display: none; }
+  #personalPlans .why-row .expand-arrow { margin-left: auto; }
+}
+
+/* ===== SMALL SCREENS — Multi ≤380px ===== */
+@media (max-width: 380px) {
+  #multiPlans .plan-top { flex-wrap: wrap; padding: 16px 14px; gap: 6px 0; }
+  #multiPlans .plan-info { flex-basis: 100%; margin-bottom: 2px; }
+  #multiPlans .plan-name { font-size: 15px; }
+  #multiPlans .plan-price-dynamic { flex: 1; justify-content: flex-start; align-items: center; }
+  #multiPlans .plan-orig-col { flex-direction: row; gap: 4px; align-items: baseline; border-right: 1px solid var(--gray-200); padding-right: 8px; margin-right: 8px; }
+  #multiPlans .plan-orig-col .orig-label { font-size: 7px; }
+  #multiPlans .plan-orig-col .orig-price { font-size: 11px; }
+  #multiPlans .plan-dyn-col .plan-price { font-size: 24px; min-width: auto; }
+  #multiPlans .plan-dyn-col .plan-price sup { font-size: 12px; }
+  #multiPlans .expand-arrow { margin-left: auto; }
+}
 
 /* ===== DESKTOP RESPONSIVE — 768px+ ===== */
 @media (min-width: 768px) {
