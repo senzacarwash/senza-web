@@ -88,6 +88,18 @@ function toggleMobileSub(el) {
   if (arrow) arrow.textContent = sub.classList.contains('open') ? '▲' : '▼';
 }
 
+// ===== LOYALTY FORM =====
+function submitLoyaltyForm(e) {
+  e.preventDefault();
+  var form = document.getElementById('loyaltyForm');
+  var toast = document.createElement('div');
+  toast.textContent = '¡Listo! Te enviaremos tu Loyalty Card por email.';
+  toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--gray-900);color:white;padding:14px 24px;border-radius:10px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);text-align:center;max-width:90vw';
+  document.body.appendChild(toast);
+  form.reset();
+  setTimeout(function(){ toast.remove(); }, 4000);
+}
+
 // Expose globally
 window.showPageView = showPageView;
 window.goHome = goHome;
@@ -97,3 +109,4 @@ window.toggleMobileMenu = toggleMobileMenu;
 window.closeMobileMenu = closeMobileMenu;
 window.mobileMenuAction = mobileMenuAction;
 window.toggleMobileSub = toggleMobileSub;
+window.submitLoyaltyForm = submitLoyaltyForm;

@@ -7,7 +7,7 @@ const senzaKnowledge = {
   ultimate: "El plan Ultimate ($39/mes) es el lavado más completo. Incluye todo lo del Supreme más Ultimate Shine Protection y 2 limpiezas y aspirado interior incluidos al mes por vehículo. Adicionales a $5.",
   multi: "Con Multi-Vehículo, tu primer auto paga precio regular y cada auto adicional recibe un descuento fijo según su plan. Puedes registrar varios vehículos con un solo cargo mensual.",
   descuento: "El descuento es fijo para cada auto adicional: Auto 1 paga precio regular, y todos los autos del 2 en adelante pagan un precio con descuento. Por ejemplo con Supreme: Auto 1 $34, Auto 2+ $28 cada uno (ahorras $6 por auto adicional).",
-  ubicación: "Estamos ubicados en Llano Bonito, Ciudad de Panamá, junto a la estación Puma.",
+  ubicación: "Estamos ubicados en Llano Bonito, Ciudad de Panamá, junto a la estación Puma. Contamos con sala de espera con aire acondicionado, café y agua de cortesía.",
   horario: "Nuestro horario es: Lunes a Sábado de 7am a 7pm, y Domingos de 8am a 5pm. Estamos en Llano Bonito, junto a la estación Puma.",
   lavado: "Nuestro túnel automático de última generación (TWASH30 PRO) realiza el lavado en aproximadamente 3 minutos. Además contamos con 8 bahías de aspirado para que limpies el interior.",
   cancelar: "Puedes cancelar en cualquier momento sin contrato ni penalidad. Disfrutas el servicio hasta el final de tu ciclo de facturación.",

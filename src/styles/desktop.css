@@ -27,7 +27,7 @@
   .member-name { font-size: 30px; }
 
   /* --- TABS --- */
-  .tabs { justify-content: center; max-width: 600px; margin: 0 auto; border-bottom: 2px solid var(--gray-200); }
+  .tabs { justify-content: center; max-width: 600px; margin: 0 auto; border-bottom: 2px solid var(--gray-200); position: sticky; top: 58px; z-index: 40; background: var(--white); }
   .tab { flex: none; padding: 14px 32px; font-size: 13px; }
 
   /* --- PLANS HEADER --- */
@@ -85,6 +85,8 @@
     gap: 4px;
   }
   .plan-info { text-align: center; }
+  .plan-orig-mobile { display: none !important; }
+  .plan-top-divider { display: none !important; }
   .plan-pricing { margin-right: 0; align-items: center; }
   .plan-price-dynamic { margin-right: 0; justify-content: center; min-width: auto; }
   .plan-dyn-col { align-items: center; }
@@ -225,6 +227,7 @@
   #multiPlans { max-width: 1200px; }
 
   .nav { padding: 14px 60px; }
+  .tabs { top: 62px; }
   .nav-menu-link { font-size: 12px; padding: 8px 16px; }
   .footer { padding: 36px 60px; }
 
