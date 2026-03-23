@@ -98,21 +98,7 @@ function submitLoyaltyForm(e) {
     '<div class="co-success-icon" style="color:var(--green)">✓</div>' +
     '<h2>¡Solicitud Recibida!</h2>' +
     '<p>Gracias por solicitar tu Loyalty Card. Te llegará por email. Sigue los pasos en el email para agregarla a tu Wallet y empieza a acumular lavados. ¡El 9no es gratis!</p>' +
-    '<button class="co-btn-primary" onclick="resetLoyaltyForm()">Volver a Loyalty Card</button>' +
     '</div>';
-}
-function resetLoyaltyForm() {
-  var cta = document.getElementById('loyaltyFormCta');
-  cta.innerHTML = '<h3>Obtén tu Loyalty Card</h3>' +
-    '<p>Completa tus datos y recibe tu tarjeta digital directo en tu wallet.</p>' +
-    '<form id="loyaltyForm" onsubmit="submitLoyaltyForm(event)" style="text-align:left;margin-top:16px">' +
-      '<div class="co-row"><div class="co-field"><label>Nombre</label><input type="text" name="nombre" required placeholder="Tu nombre"></div><div class="co-field"><label>Apellido</label><input type="text" name="apellido" required placeholder="Tu apellido"></div></div>' +
-      '<div class="co-field"><label>Email</label><input type="email" name="email" required placeholder="tu@email.com"></div>' +
-      '<div class="co-field"><label>Placa del vehículo</label><input type="text" name="placa" required placeholder="Ej: ABC-1234" style="text-transform:uppercase"></div>' +
-      '<div class="co-row"><div class="co-field"><label>Marca</label><input type="text" name="marca" required placeholder="Ej: Toyota"></div><div class="co-field"><label>Modelo</label><input type="text" name="modelo" required placeholder="Ej: Corolla"></div></div>' +
-      '<div class="co-field"><label>Color</label><input type="text" name="color" required placeholder="Ej: Blanco, Negro, Gris..."></div>' +
-      '<div style="text-align:center;margin-top:18px"><button type="submit" class="loyalty-cta-btn">Solicitar mi Loyalty Card →</button></div>' +
-    '</form>';
 }
 
 // Expose globally
@@ -125,4 +111,3 @@ window.closeMobileMenu = closeMobileMenu;
 window.mobileMenuAction = mobileMenuAction;
 window.toggleMobileSub = toggleMobileSub;
 window.submitLoyaltyForm = submitLoyaltyForm;
-window.resetLoyaltyForm = resetLoyaltyForm;
