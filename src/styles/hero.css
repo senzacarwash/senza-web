@@ -1,0 +1,19 @@
+/* ===== HERO — shared base, content swaps ===== */
+.hero{background:linear-gradient(145deg,#001a3d 0%,#003080 50%,#004db3 100%);padding:32px 24px 28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 120% 80% at 80% 70%,rgba(255,59,0,.1) 0%,transparent 60%)}
+.hero *{position:relative;z-index:2}
+.hero .breadcrumb{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:12px}
+.hero .breadcrumb span{color:var(--orange)}
+.hero h1{font-size:30px;font-weight:900;color:white;line-height:1.08;margin-bottom:10px}
+.hero h1 em{color:var(--orange);font-style:italic}
+.hero p{font-size:13px;color:rgba(255,255,255,.75);line-height:1.5}
+.hero .btn-hero{display:inline-block;margin-top:16px;background:var(--orange);color:white;padding:12px 28px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;box-shadow:0 4px 16px rgba(255,59,0,.3);letter-spacing:.3px}
+
+/* ===== TABS ===== */
+.tabs{display:flex;background:var(--white);border-bottom:2px solid var(--gray-200);position:sticky;top:54px;z-index:40}
+.tab{flex:1;text-align:center;padding:14px 8px;font-size:12px;font-weight:700;color:var(--gray-500);border-bottom:3px solid transparent;cursor:pointer;transition:all .2s;letter-spacing:.3px;margin-bottom:-2px;-webkit-tap-highlight-color:transparent}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ===== CONTENT PANELS ===== */
+.panel{display:none}
+.panel.active{display:block}
