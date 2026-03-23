@@ -55,8 +55,7 @@ function buildVehicleForm(index, total) {
     '<div class="co-field"><label>Placa del vehículo</label><input type="text" id="coPlaca' + index + '" placeholder="Ej: ABC-1234" style="text-transform:uppercase" oninput="this.classList.remove(\'error\');updateSummaryPlacas()"><div class="field-error">Ingresa la placa</div></div>' +
     '<div class="co-row"><div class="co-field"><label>Marca</label><input type="text" id="coMarca' + index + '" placeholder="Ej: Toyota" oninput="this.classList.remove(\'error\');updateSummaryPlacas()"></div>' +
     '<div class="co-field"><label>Modelo</label><input type="text" id="coModelo' + index + '" placeholder="Ej: Corolla"></div></div>' +
-    '<div class="co-row"><div class="co-field"><label>Año</label><input type="text" id="coYear' + index + '" placeholder="Ej: 2024" inputmode="numeric" maxlength="4"></div>' +
-    '<div class="co-field"><label>Color</label><input type="text" id="coColor' + index + '" placeholder="Ej: Blanco"></div></div>' +
+    '<div class="co-field"><label>Color</label><input type="text" id="coColor' + index + '" placeholder="Ej: Blanco"></div>' +
     '</div>';
 }
 

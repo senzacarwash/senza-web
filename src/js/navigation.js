@@ -110,6 +110,7 @@ function resetLoyaltyForm() {
       '<div class="co-field"><label>Email</label><input type="email" name="email" required placeholder="tu@email.com"></div>' +
       '<div class="co-field"><label>Placa del vehículo</label><input type="text" name="placa" required placeholder="Ej: ABC-1234" style="text-transform:uppercase"></div>' +
       '<div class="co-row"><div class="co-field"><label>Marca</label><input type="text" name="marca" required placeholder="Ej: Toyota"></div><div class="co-field"><label>Modelo</label><input type="text" name="modelo" required placeholder="Ej: Corolla"></div></div>' +
+      '<div class="co-field"><label>Color</label><input type="text" name="color" required placeholder="Ej: Blanco, Negro, Gris..."></div>' +
       '<div style="text-align:center;margin-top:18px"><button type="submit" class="loyalty-cta-btn">Solicitar mi Loyalty Card →</button></div>' +
     '</form>';
 }
