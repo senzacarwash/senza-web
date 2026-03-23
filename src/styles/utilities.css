@@ -21,7 +21,7 @@
   #multiPlans .plan-orig-col { flex-direction: row; gap: 4px; align-items: baseline; border-right: 1px solid var(--gray-200); padding-right: 8px; margin-right: 8px; }
   #multiPlans .plan-orig-col .orig-label { font-size: 7px; }
   #multiPlans .plan-orig-col .orig-price { font-size: 11px; }
-  #multiPlans .plan-dyn-col .plan-price { font-size: 24px; min-width: auto; }
+  #multiPlans .plan-dyn-col .plan-price { font-size: 22px; min-width: 80px; }
   #multiPlans .plan-dyn-col .plan-price sup { font-size: 12px; }
   #multiPlans .expand-arrow { margin-left: auto; }
 }

@@ -89,7 +89,7 @@
 .plan-orig-col .orig-price{font-size:14px;font-weight:700;color:var(--gray-400);line-height:1.2;text-decoration:line-through}
 .plan-dyn-col{display:flex;flex-direction:column;align-items:flex-end}
 .plan-dyn-col .plan-price-row{display:flex;align-items:baseline;gap:4px}
-.plan-dyn-col .plan-price{font-size:24px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;min-width:70px;text-align:right}
+.plan-dyn-col .plan-price{font-size:22px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;min-width:80px;text-align:right}
 .plan-dyn-col .plan-price sup{font-size:14px}
 .plan-dyn-col .plan-per{font-size:10px;color:var(--gray-500);text-align:right;white-space:nowrap}
 .plan-dyn-col .plan-unlimited{font-size:10px;font-weight:800;color:var(--gray-500);line-height:1;margin-top:1px;text-align:right}
