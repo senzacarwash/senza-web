@@ -92,12 +92,26 @@ function toggleMobileSub(el) {
 function submitLoyaltyForm(e) {
   e.preventDefault();
   var form = document.getElementById('loyaltyForm');
-  var toast = document.createElement('div');
-  toast.textContent = '¡Listo! Te enviaremos tu Loyalty Card por email.';
-  toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--gray-900);color:white;padding:14px 24px;border-radius:10px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);text-align:center;max-width:90vw';
-  document.body.appendChild(toast);
+  var cta = document.getElementById('loyaltyFormCta');
   form.reset();
-  setTimeout(function(){ toast.remove(); }, 4000);
+  cta.innerHTML = '<div class="co-success">' +
+    '<div class="co-success-icon" style="color:var(--green)">✓</div>' +
+    '<h2>¡Solicitud Recibida!</h2>' +
+    '<p>Gracias por solicitar tu Loyalty Card. Te llegará por email. Sigue los pasos en el email para agregarla a tu Wallet y empieza a acumular lavados. ¡El 9no es gratis!</p>' +
+    '<button class="co-btn-primary" onclick="resetLoyaltyForm()">Volver a Loyalty Card</button>' +
+    '</div>';
+}
+function resetLoyaltyForm() {
+  var cta = document.getElementById('loyaltyFormCta');
+  cta.innerHTML = '<h3>Obtén tu Loyalty Card</h3>' +
+    '<p>Completa tus datos y recibe tu tarjeta digital directo en tu wallet.</p>' +
+    '<form id="loyaltyForm" onsubmit="submitLoyaltyForm(event)" style="text-align:left;margin-top:16px">' +
+      '<div class="co-row"><div class="co-field"><label>Nombre</label><input type="text" name="nombre" required placeholder="Tu nombre"></div><div class="co-field"><label>Apellido</label><input type="text" name="apellido" required placeholder="Tu apellido"></div></div>' +
+      '<div class="co-field"><label>Email</label><input type="email" name="email" required placeholder="tu@email.com"></div>' +
+      '<div class="co-field"><label>Placa del vehículo</label><input type="text" name="placa" required placeholder="Ej: ABC-1234" style="text-transform:uppercase"></div>' +
+      '<div class="co-row"><div class="co-field"><label>Marca</label><input type="text" name="marca" required placeholder="Ej: Toyota"></div><div class="co-field"><label>Modelo</label><input type="text" name="modelo" required placeholder="Ej: Corolla"></div></div>' +
+      '<div style="text-align:center;margin-top:18px"><button type="submit" class="loyalty-cta-btn">Solicitar mi Loyalty Card →</button></div>' +
+    '</form>';
 }
 
 // Expose globally
@@ -110,3 +124,4 @@ window.closeMobileMenu = closeMobileMenu;
 window.mobileMenuAction = mobileMenuAction;
 window.toggleMobileSub = toggleMobileSub;
 window.submitLoyaltyForm = submitLoyaltyForm;
+window.resetLoyaltyForm = resetLoyaltyForm;

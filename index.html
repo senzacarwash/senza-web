@@ -665,13 +665,19 @@
       </div>
     </div>
 
-    <div class="loyalty-cta">
+    <div class="loyalty-cta" id="loyaltyFormCta">
       <h3>Obtén tu Loyalty Card</h3>
       <p>Completa tus datos y recibe tu tarjeta digital directo en tu wallet.</p>
       <form id="loyaltyForm" onsubmit="submitLoyaltyForm(event)" style="text-align:left;margin-top:16px">
-        <div class="co-field">
-          <label>Nombre completo</label>
-          <input type="text" name="nombre" required placeholder="Tu nombre completo">
+        <div class="co-row">
+          <div class="co-field">
+            <label>Nombre</label>
+            <input type="text" name="nombre" required placeholder="Tu nombre">
+          </div>
+          <div class="co-field">
+            <label>Apellido</label>
+            <input type="text" name="apellido" required placeholder="Tu apellido">
+          </div>
         </div>
         <div class="co-field">
           <label>Email</label>
@@ -1146,10 +1152,6 @@
           <input type="text" placeholder="Ej: Corolla, Civic, Tucson...">
         </div>
         <div class="co-field">
-          <label>Año</label>
-          <input type="text" placeholder="Ej: 2023" maxlength="4" inputmode="numeric">
-        </div>
-        <div class="co-field">
           <label>Color</label>
           <input type="text" placeholder="Ej: Blanco, Negro, Gris...">
         </div>
@@ -1295,10 +1297,6 @@
         <div class="co-field">
           <label>Modelo</label>
           <input type="text" placeholder="Ej: Corolla, Civic, Tucson...">
-        </div>
-        <div class="co-field">
-          <label>Año</label>
-          <input type="text" placeholder="Ej: 2023" maxlength="4" inputmode="numeric">
         </div>
         <div class="co-field">
           <label>Color</label>
