@@ -83,8 +83,11 @@
 .vehicle-counter .vc-label{font-size:9px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
 
 /* Mobile original price below plan name */
-.plan-orig-mobile{margin-top:2px}
-.orig-price-mobile{font-size:11px;font-weight:600;color:var(--gray-400);text-decoration:line-through}
+.plan-orig-mobile{margin-top:2px;font-size:11px;font-weight:600;color:var(--gray-400)}
+.orig-price-mobile{text-decoration:line-through}
+
+/* Vertical divider between plan-info and price (same style as .wr-divider) */
+.plan-top-divider{width:1px;align-self:stretch;background:var(--gray-200);flex-shrink:0}
 
 /* Dynamic pricing on multi plan cards */
 .plan-price-dynamic{display:flex;align-items:center;gap:0;min-width:90px;justify-content:flex-end}
