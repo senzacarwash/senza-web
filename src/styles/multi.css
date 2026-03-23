@@ -82,9 +82,13 @@
 .vehicle-counter .vc-num{font-size:24px;font-weight:900;color:var(--gray-900)}
 .vehicle-counter .vc-label{font-size:9px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
 
+/* Mobile original price below plan name */
+.plan-orig-mobile{margin-top:2px}
+.orig-price-mobile{font-size:11px;font-weight:600;color:var(--gray-400);text-decoration:line-through}
+
 /* Dynamic pricing on multi plan cards */
 .plan-price-dynamic{display:flex;align-items:center;gap:0;min-width:90px;justify-content:flex-end}
-.plan-orig-col{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;margin-right:6px;padding-right:10px;border-right:1px solid var(--gray-200)}
+.plan-orig-col{display:none}
 .plan-orig-col .orig-label{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--gray-400)}
 .plan-orig-col .orig-price{font-size:14px;font-weight:700;color:var(--gray-400);line-height:1.2;text-decoration:line-through}
 .plan-dyn-col{display:flex;flex-direction:column;align-items:flex-end}

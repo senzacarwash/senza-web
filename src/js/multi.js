@@ -25,12 +25,15 @@ function updateMultiPrices() {
     var labelEl = document.getElementById('mp-label-' + key);
     var perEl = document.getElementById('mp-per-' + key);
     if (priceEl) priceEl.textContent = displayPrice;
+    var origMobEl = document.getElementById('mp-orig-mob-' + key);
     if (count > 1) {
       origEl.style.display = 'flex';
+      if (origMobEl) origMobEl.style.display = 'block';
       perEl.textContent = '/mes por auto';
       labelEl.textContent = 'Lavados ilimitados';
     } else {
       origEl.style.display = 'none';
+      if (origMobEl) origMobEl.style.display = 'none';
       perEl.textContent = '/mes';
       labelEl.textContent = 'Lavados ilimitados';
     }

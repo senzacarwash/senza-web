@@ -85,6 +85,7 @@
     gap: 4px;
   }
   .plan-info { text-align: center; }
+  .plan-orig-mobile { display: none !important; }
   .plan-pricing { margin-right: 0; align-items: center; }
   .plan-price-dynamic { margin-right: 0; justify-content: center; min-width: auto; }
   .plan-dyn-col { align-items: center; }

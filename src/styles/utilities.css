@@ -18,9 +18,6 @@
   #multiPlans .plan-info { flex-basis: 100%; margin-bottom: 2px; }
   #multiPlans .plan-name { font-size: 15px; }
   #multiPlans .plan-price-dynamic { flex: 1; justify-content: flex-start; align-items: center; }
-  #multiPlans .plan-orig-col { flex-direction: row; gap: 4px; align-items: baseline; border-right: 1px solid var(--gray-200); padding-right: 8px; margin-right: 8px; }
-  #multiPlans .plan-orig-col .orig-label { font-size: 7px; }
-  #multiPlans .plan-orig-col .orig-price { font-size: 11px; }
   #multiPlans .plan-dyn-col .plan-price { font-size: 22px; min-width: 80px; }
   #multiPlans .plan-dyn-col .plan-price sup { font-size: 12px; }
   #multiPlans .expand-arrow { margin-left: auto; }
