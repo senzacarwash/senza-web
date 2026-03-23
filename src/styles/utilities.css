@@ -1,0 +1,27 @@
+/* ===== UTILITY ===== */
+.divider{height:1px;background:var(--gray-100);margin:12px 0}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.text-center{text-align:center}
+.text-small{font-size:11px;color:var(--gray-500);line-height:1.4}
+
+/* ===== SMALL SCREENS — Personal ≤340px ===== */
+@media (max-width: 340px) {
+  #personalPlans .why-row .wr-result { display: none; }
+  #personalPlans .why-row .expand-arrow { margin-left: auto; }
+}
+
+/* ===== SMALL SCREENS — Multi ≤380px ===== */
+@media (max-width: 380px) {
+  #multiPlans .plan-top { flex-wrap: wrap; padding: 16px 14px; gap: 6px 0; }
+  #multiPlans .plan-info { flex-basis: 100%; margin-bottom: 2px; }
+  #multiPlans .plan-name { font-size: 15px; }
+  #multiPlans .plan-price-dynamic { flex: 1; justify-content: flex-start; align-items: center; }
+  #multiPlans .plan-orig-col { flex-direction: row; gap: 4px; align-items: baseline; border-right: 1px solid var(--gray-200); padding-right: 8px; margin-right: 8px; }
+  #multiPlans .plan-orig-col .orig-label { font-size: 7px; }
+  #multiPlans .plan-orig-col .orig-price { font-size: 11px; }
+  #multiPlans .plan-dyn-col .plan-price { font-size: 24px; min-width: auto; }
+  #multiPlans .plan-dyn-col .plan-price sup { font-size: 12px; }
+  #multiPlans .expand-arrow { margin-left: auto; }
+}
