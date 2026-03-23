@@ -665,13 +665,19 @@
       </div>
     </div>
 
-    <div class="loyalty-cta">
+    <div class="loyalty-cta" id="loyaltyFormCta">
       <h3>Obtén tu Loyalty Card</h3>
       <p>Completa tus datos y recibe tu tarjeta digital directo en tu wallet.</p>
       <form id="loyaltyForm" onsubmit="submitLoyaltyForm(event)" style="text-align:left;margin-top:16px">
-        <div class="co-field">
-          <label>Nombre completo</label>
-          <input type="text" name="nombre" required placeholder="Tu nombre completo">
+        <div class="co-row">
+          <div class="co-field">
+            <label>Nombre</label>
+            <input type="text" name="nombre" required placeholder="Tu nombre">
+          </div>
+          <div class="co-field">
+            <label>Apellido</label>
+            <input type="text" name="apellido" required placeholder="Tu apellido">
+          </div>
         </div>
         <div class="co-field">
           <label>Email</label>
@@ -690,6 +696,10 @@
             <label>Modelo</label>
             <input type="text" name="modelo" required placeholder="Ej: Corolla">
           </div>
+        </div>
+        <div class="co-field">
+          <label>Color</label>
+          <input type="text" name="color" required placeholder="Ej: Blanco, Negro, Gris...">
         </div>
         <div style="text-align:center;margin-top:18px">
           <button type="submit" class="loyalty-cta-btn">Solicitar mi Loyalty Card →</button>
@@ -822,7 +832,7 @@
     </div>
     <div class="plan-vehicle">
       <div class="plan-vehicle-info">
-        <div class="plan-vehicle-name">Toyota RAV4 2023</div>
+        <div class="plan-vehicle-name">Toyota RAV4</div>
         <div class="plan-vehicle-plate">Placa: ABC-1234</div>
       </div>
     </div>
@@ -1121,7 +1131,7 @@
       <div class="card-body" style="display:flex;align-items:center;gap:10px;padding:14px 16px">
         <div style="width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;flex-shrink:0">1</div>
         <div style="flex:1">
-          <div style="font-size:12px;font-weight:700;color:var(--gray-900)">Toyota RAV4 2023</div>
+          <div style="font-size:12px;font-weight:700;color:var(--gray-900)">Toyota RAV4</div>
           <div style="font-size:10px;color:var(--gray-500)">ABC-1234 · Plan Supreme</div>
         </div>
         <div style="font-size:13px;font-weight:800;color:var(--gray-900)">$34</div>
@@ -1144,10 +1154,6 @@
         <div class="co-field">
           <label>Modelo</label>
           <input type="text" placeholder="Ej: Corolla, Civic, Tucson...">
-        </div>
-        <div class="co-field">
-          <label>Año</label>
-          <input type="text" placeholder="Ej: 2023" maxlength="4" inputmode="numeric">
         </div>
         <div class="co-field">
           <label>Color</label>
@@ -1277,7 +1283,7 @@
       <div class="card-body" style="display:flex;align-items:center;gap:10px;padding:14px 16px">
         <div style="font-size:10px;font-weight:700;color:var(--orange);background:var(--orange-bg);padding:3px 8px;border-radius:4px">ACTUAL</div>
         <div style="flex:1">
-          <div style="font-size:13px;font-weight:700;color:var(--gray-900)">Toyota RAV4 2023</div>
+          <div style="font-size:13px;font-weight:700;color:var(--gray-900)">Toyota RAV4</div>
           <div style="font-size:10px;color:var(--gray-500)">Placa: ABC-1234</div>
         </div>
       </div>
@@ -1295,10 +1301,6 @@
         <div class="co-field">
           <label>Modelo</label>
           <input type="text" placeholder="Ej: Corolla, Civic, Tucson...">
-        </div>
-        <div class="co-field">
-          <label>Año</label>
-          <input type="text" placeholder="Ej: 2023" maxlength="4" inputmode="numeric">
         </div>
         <div class="co-field">
           <label>Color</label>
@@ -1328,7 +1330,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">¿Eliminar este vehículo?</div>
-    <div class="modal-desc">Se eliminará <strong>Toyota RAV4 2023 (ABC-1234)</strong> de tu membresía. Si es tu único vehículo, esto cancelará tu membresía.</div>
+    <div class="modal-desc">Se eliminará <strong>Toyota RAV4 (ABC-1234)</strong> de tu membresía. Si es tu único vehículo, esto cancelará tu membresía.</div>
     <div class="modal-actions">
       <button class="btn-danger-outline" onclick="closeModal('removeVehicle');showToast('Vehículo eliminado')">Sí, Eliminar Vehículo</button>
       <button class="btn-secondary" onclick="closeModal('removeVehicle')">Cancelar</button>

@@ -92,12 +92,13 @@ function toggleMobileSub(el) {
 function submitLoyaltyForm(e) {
   e.preventDefault();
   var form = document.getElementById('loyaltyForm');
-  var toast = document.createElement('div');
-  toast.textContent = '¡Listo! Te enviaremos tu Loyalty Card por email.';
-  toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--gray-900);color:white;padding:14px 24px;border-radius:10px;font-family:Exo 2,sans-serif;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.25);text-align:center;max-width:90vw';
-  document.body.appendChild(toast);
+  var cta = document.getElementById('loyaltyFormCta');
   form.reset();
-  setTimeout(function(){ toast.remove(); }, 4000);
+  cta.innerHTML = '<div class="co-success">' +
+    '<div class="co-success-icon" style="color:var(--green)">✓</div>' +
+    '<h2>¡Solicitud Recibida!</h2>' +
+    '<p>Gracias por solicitar tu Loyalty Card. Te llegará por email. Sigue los pasos en el email para agregarla a tu Wallet y empieza a acumular lavados. ¡El 9no es gratis!</p>' +
+    '</div>';
 }
 
 // Expose globally
