@@ -1,0 +1,106 @@
+/* ===== HOW IT WORKS (Multi only) ===== */
+.how-section{padding:24px 20px 8px}
+.how-section h3{font-size:16px;font-weight:800;color:var(--gray-900);text-align:center;margin-bottom:16px}
+.how-steps{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:flex-start;gap:0;margin-bottom:16px}
+.how-step{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 2px}
+.how-icon-wrap{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:8px;background:var(--blue)}
+.how-num{font-size:18px;font-weight:800;color:white;line-height:1}
+.how-step .how-title{font-size:12px;font-weight:700;color:var(--gray-900);margin-bottom:2px;line-height:1.2}
+.how-step .how-desc{font-size:10px;color:var(--gray-500);line-height:1.35}
+.how-arrow{display:flex;align-items:center;padding-top:14px;color:var(--gray-300);font-size:14px}
+
+/* ===== MULTI-VEHICULO CTA (Personal only) ===== */
+.multi-cta{margin:4px 20px 20px;background:linear-gradient(135deg,var(--blue),var(--blue-dark));border-radius:14px;padding:24px 20px;text-align:center}
+.multi-cta h3{font-size:16px;font-weight:800;color:white;margin-bottom:6px}
+.multi-cta p{font-size:12px;color:rgba(255,255,255,.8);margin-bottom:12px;line-height:1.4}
+.btn-white{display:inline-block;background:white;color:var(--blue);padding:10px 24px;border-radius:6px;font-weight:700;font-size:12px;text-decoration:none;cursor:pointer;font-family:'Exo 2',sans-serif;border:none;-webkit-tap-highlight-color:transparent}
+
+/* ===== CALCULATOR (Multi only) ===== */
+.calc-wrap{padding:16px 20px}
+.calc-container{border-radius:16px;overflow:hidden;border:2px solid var(--gray-200);box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.calc-header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%);padding:18px 20px;text-align:center}
+.calc-header h3{font-size:16px;font-weight:800;color:white;margin-bottom:2px}
+.calc-header p{font-size:11px;color:rgba(255,255,255,.7)}
+.calc-body{padding:20px;background:var(--white)}
+.calc-inputs{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
+.calc-group label{display:block;font-size:11px;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.calc-group select{width:100%;padding:12px 14px;border:2px solid var(--gray-200);border-radius:8px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:600;color:var(--gray-900);appearance:none;background:var(--white);background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%236B7280' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.car-counter{display:flex;align-items:center;border:2px solid var(--gray-200);border-radius:8px;overflow:hidden;height:46px}
+.car-counter button{width:46px;height:100%;border:none;background:var(--gray-50);font-size:20px;font-weight:700;color:var(--gray-700);cursor:pointer;font-family:'Exo 2',sans-serif;-webkit-tap-highlight-color:transparent}
+.car-counter .count-display{flex:1;text-align:center;font-size:18px;font-weight:800;color:var(--gray-900);display:flex;align-items:center;justify-content:center;gap:4px}
+.car-icons{display:flex;gap:2px;font-size:12px}
+
+.calc-results{background:var(--gray-50);border-radius:10px;padding:16px;border:1px solid var(--gray-200)}
+.calc-results-title{font-size:10px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;text-align:center}
+.calc-line{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--gray-200);font-size:12px;color:var(--gray-700)}
+.calc-line:last-child{border-bottom:none}
+.calc-line-left{display:flex;align-items:center;gap:6px;flex:1}
+.calc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.calc-dot.first{background:var(--blue)}
+.calc-dot.add{background:var(--green)}
+.calc-tag{font-size:9px;font-weight:700;color:var(--green);background:var(--green-bg);padding:1px 5px;border-radius:4px;margin-left:auto;margin-right:8px}
+.calc-line-price{font-weight:700;color:var(--gray-900);white-space:nowrap}
+
+.calc-totals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.calc-total-box{border-radius:8px;padding:12px;text-align:center}
+.calc-total-box.regular{background:var(--white);border:1px solid var(--gray-200)}
+.calc-total-box.discounted{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-dark) 100%)}
+.ct-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.calc-total-box.regular .ct-label{color:var(--gray-500)}
+.calc-total-box.discounted .ct-label{color:rgba(255,255,255,.7)}
+.ct-value{font-size:22px;font-weight:900}
+.calc-total-box.regular .ct-value{color:var(--gray-900)}
+.calc-total-box.discounted .ct-value{color:white}
+.ct-per{font-size:10px}
+.calc-total-box.regular .ct-per{color:var(--gray-500)}
+.calc-total-box.discounted .ct-per{color:rgba(255,255,255,.6)}
+
+.calc-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+.cm-box{border-radius:8px;padding:10px 6px;text-align:center}
+.cm-box.sav{background:var(--green-bg);border:1.5px solid var(--green)}
+.cm-box.avg{background:var(--blue-bg);border:1.5px solid var(--blue)}
+.cm-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;line-height:1.2;margin-bottom:2px}
+.cm-box.sav .cm-label{color:var(--green)}
+.cm-box.avg .cm-label{color:var(--blue-dark)}
+.cm-value{font-size:16px;font-weight:900}
+.cm-box.sav .cm-value{color:var(--green)}
+.cm-box.avg .cm-value{color:var(--blue-dark)}
+.cm-sub{font-size:8px;font-weight:500}
+.cm-box.sav .cm-sub{color:var(--green)}
+.cm-box.avg .cm-sub{color:var(--blue)}
+
+.calc-cta{text-align:center;margin-top:16px}
+.btn-calc-cta{display:inline-block;background:var(--orange);color:white;padding:12px 28px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;border:none;font-family:'Exo 2',sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(255,59,0,.2);-webkit-tap-highlight-color:transparent}
+
+/* Vehicle selector below header */
+.vehicle-selector{margin:0 20px 18px;text-align:center}
+.vehicle-selector-label{font-size:12px;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.vehicle-counter{display:inline-flex;align-items:center;border:2px solid var(--blue);border-radius:12px;overflow:hidden;height:54px;background:var(--white)}
+.vehicle-counter button{width:48px;height:100%;border:none;background:var(--gray-50);font-size:22px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Exo 2',sans-serif;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.vehicle-counter button:active{background:var(--blue-bg)}
+.vehicle-counter .vc-display{min-width:90px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 8px;line-height:1}
+.vehicle-counter .vc-num{font-size:24px;font-weight:900;color:var(--gray-900)}
+.vehicle-counter .vc-label{font-size:9px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+
+/* Dynamic pricing on multi plan cards */
+.plan-price-dynamic{display:flex;align-items:center;gap:0;min-width:90px;justify-content:flex-end}
+.plan-orig-col{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;margin-right:6px;padding-right:10px;border-right:1px solid var(--gray-200)}
+.plan-orig-col .orig-label{font-size:8px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--gray-400)}
+.plan-orig-col .orig-price{font-size:14px;font-weight:700;color:var(--gray-400);line-height:1.2;text-decoration:line-through}
+.plan-dyn-col{display:flex;flex-direction:column;align-items:flex-end}
+.plan-dyn-col .plan-price-row{display:flex;align-items:baseline;gap:4px}
+.plan-dyn-col .plan-price{font-size:28px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;min-width:70px;text-align:right}
+.plan-dyn-col .plan-price sup{font-size:14px}
+.plan-dyn-col .plan-per{font-size:10px;color:var(--gray-500);text-align:right}
+.plan-dyn-col .plan-unlimited{font-size:10px;font-weight:800;color:var(--gray-500);line-height:1;margin-top:1px;text-align:right}
+
+/* Inline desglose inside plan body */
+.plan-desglose{margin-top:0;background:var(--gray-50);border-radius:0 0 10px 10px;padding:14px;border-top:1px dashed var(--gray-200)}
+.plan-desglose .calc-results-title{font-size:10px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;text-align:center}
+.plan-desglose .calc-dot.add{background:var(--orange)}
+.plan-desglose .calc-tag{color:var(--orange);background:rgba(255,59,0,.08)}
+.plan-desglose .calc-totals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.plan-desglose .cm-box.sav{background:rgba(255,59,0,.06);border-color:var(--orange)}
+.plan-desglose .cm-box.sav .cm-label{color:var(--orange)}
+.plan-desglose .cm-box.sav .cm-value{color:var(--orange)}
+.plan-desglose .cm-box.sav .cm-sub{color:var(--orange)}

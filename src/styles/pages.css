@@ -1,0 +1,115 @@
+/* ===== NOSOTROS PAGE ===== */
+.about-hero{background:linear-gradient(145deg,#001a3d 0%,#003080 50%,#004db3 100%);padding:48px 20px 40px;text-align:center;position:relative;overflow:hidden;margin-top:-1px}
+.about-hero::before{content:'';position:absolute;top:-40%;right:-20%;width:70%;height:180%;background:radial-gradient(ellipse,rgba(0,207,255,.1) 0%,transparent 70%);pointer-events:none}
+.about-hero h1{font-size:28px;font-weight:800;color:white;margin:0 0 8px;line-height:1.2}
+.about-hero p{font-size:15px;color:rgba(255,255,255,.75);margin:0;line-height:1.5;max-width:500px;margin:0 auto}
+.about-section{padding:32px 20px;max-width:600px;margin:0 auto}
+.about-section h2{font-size:20px;font-weight:800;color:var(--gray-800);margin:0 0 6px;text-align:center}
+.about-section .section-line{width:40px;height:3px;background:var(--orange);border-radius:2px;margin:0 auto 16px}
+.about-section p{font-size:14px;color:var(--gray-600);line-height:1.65;margin:0 0 12px;text-align:center}
+.about-values{display:grid;grid-template-columns:1fr;gap:16px;margin-top:20px}
+.about-value-card{background:var(--white);border:1px solid var(--gray-100);border-radius:14px;padding:20px;text-align:center;transition:transform .2s,box-shadow .2s}
+.about-value-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.about-value-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px}
+.about-value-card h3{font-size:15px;font-weight:700;color:var(--gray-800);margin:0 0 6px}
+.about-value-card p{font-size:13px;color:var(--gray-500);margin:0;line-height:1.5}
+.about-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.about-stat{background:var(--gray-50);border-radius:12px;padding:16px;text-align:center}
+.about-stat .stat-num{font-size:28px;font-weight:800;color:var(--blue);line-height:1}
+.about-stat .stat-label{font-size:11px;font-weight:600;color:var(--gray-500);margin-top:4px;text-transform:uppercase;letter-spacing:.3px}
+.about-process{display:grid;grid-template-columns:1fr;gap:14px;margin-top:20px}
+.about-step{display:flex;gap:14px;align-items:flex-start}
+.about-step-num{width:36px;height:36px;border-radius:50%;background:var(--blue);color:white;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.about-step-text h4{font-size:14px;font-weight:700;color:var(--gray-800);margin:0 0 2px}
+.about-step-text p{font-size:13px;color:var(--gray-500);margin:0;line-height:1.4}
+
+/* ===== NUESTRA TECNOLOGÍA ===== */
+.tech-section{padding:32px 20px;max-width:600px;margin:0 auto}
+.tech-section h2{font-size:20px;font-weight:800;color:var(--gray-800);margin:0 0 6px;text-align:center}
+.tech-section .section-line{width:40px;height:3px;background:var(--orange);border-radius:2px;margin:0 auto 20px}
+.tech-desktop-img{display:none}
+.tech-desktop-img img{width:100%;height:auto;border-radius:16px}
+.tech-mobile{display:block}
+.tech-mobile-car{text-align:center;margin-bottom:24px}
+.tech-mobile-car img{width:90%;max-width:400px;height:auto}
+.tech-list{display:flex;flex-direction:column;gap:20px}
+.tech-item{display:flex;gap:14px;align-items:flex-start}
+.tech-item-icon{width:48px;height:48px;border-radius:12px;background:rgba(0,119,255,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tech-item-icon img{width:32px;height:32px;object-fit:contain}
+.tech-item-text h3{font-size:15px;font-weight:700;color:var(--gray-800);margin:0 0 3px}
+.tech-item-text p{font-size:13px;color:var(--gray-500);margin:0;line-height:1.5}
+
+/* ===== UBICACIÓN PAGE ===== */
+.location-hero{background:linear-gradient(145deg,#001a3d 0%,#003080 50%,#004db3 100%);padding:48px 20px 40px;text-align:center;position:relative;overflow:hidden;margin-top:-1px}
+.location-hero::before{content:'';position:absolute;top:-40%;right:-20%;width:70%;height:180%;background:radial-gradient(ellipse,rgba(0,207,255,.1) 0%,transparent 70%);pointer-events:none}
+.location-hero h1{font-size:26px;font-weight:800;color:white;margin:0 0 8px;line-height:1.2}
+.location-hero p{font-size:15px;color:rgba(255,255,255,.75);margin:0 auto;line-height:1.5;max-width:400px}
+.location-content{padding:24px 20px;max-width:600px;margin:0 auto}
+.location-map-wrap{border-radius:14px;overflow:hidden;border:1px solid var(--gray-100);box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px}
+.location-map-wrap iframe{width:100%;height:260px;border:0}
+.location-address{background:var(--white);border:1px solid var(--gray-100);border-radius:14px;padding:20px;margin-bottom:16px}
+.location-address h3{font-size:15px;font-weight:700;color:var(--gray-800);margin:0 0 8px}
+.location-address p{font-size:13px;color:var(--gray-500);line-height:1.5;margin:0 0 4px}
+.location-nav-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.location-nav-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 16px;border-radius:12px;border:none;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.location-nav-btn:active{transform:scale(.97)}
+.location-nav-btn.gmaps{background:#4285F4;color:white}
+.location-nav-btn.waze{background:#33CCFF;color:white}
+.location-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.location-info-card{background:var(--gray-50);border-radius:12px;padding:14px;text-align:center}
+.location-info-card .info-icon{font-size:20px;margin-bottom:6px}
+.location-info-card h4{font-size:13px;font-weight:700;color:var(--gray-800);margin:0 0 2px}
+.location-info-card p{font-size:12px;color:var(--gray-500);margin:0}
+
+/* ===== LOYALTY CARD PAGE ===== */
+.loyalty-hero{background:linear-gradient(145deg,#001a3d 0%,#003080 50%,#004db3 100%);padding:48px 20px 40px;text-align:center;position:relative;overflow:hidden;margin-top:-1px}
+.loyalty-hero::before{content:'';position:absolute;top:-40%;left:-20%;width:70%;height:180%;background:radial-gradient(ellipse,rgba(0,207,255,.1) 0%,transparent 70%);pointer-events:none}
+.loyalty-hero h1{font-size:26px;font-weight:800;color:white;margin:0 0 8px;line-height:1.2}
+.loyalty-hero p{font-size:15px;color:rgba(255,255,255,.75);margin:0 auto;line-height:1.5;max-width:440px}
+.loyalty-content{padding:24px 20px;max-width:600px;margin:0 auto}
+.loyalty-card-visual{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);border-radius:16px;padding:24px;position:relative;overflow:hidden;margin-bottom:24px;color:white;box-shadow:0 8px 32px rgba(0,0,0,.15)}
+.loyalty-card-visual::before{content:'';position:absolute;top:-50%;right:-30%;width:80%;height:200%;background:radial-gradient(ellipse,rgba(0,207,255,.12) 0%,transparent 60%);pointer-events:none}
+.loyalty-card-visual .lc-brand{font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:20px}
+.loyalty-card-visual .lc-stamps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+.loyalty-card-visual .lc-stamp{aspect-ratio:1;border-radius:10px;border:2px dashed rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;font-size:20px;position:relative}
+.loyalty-card-visual .lc-stamp.filled{background:rgba(0,207,255,.15);border-color:var(--cyan);border-style:solid}
+.loyalty-card-visual .lc-stamp.free{background:linear-gradient(135deg,var(--orange),#ff6600);border-color:var(--orange);border-style:solid}
+.loyalty-card-visual .lc-note{font-size:11px;color:rgba(255,255,255,.5);text-align:center}
+.loyalty-how{margin-bottom:24px}
+.loyalty-how h2{font-size:18px;font-weight:800;color:var(--gray-800);margin:0 0 16px;text-align:center}
+.loyalty-steps{display:grid;grid-template-columns:1fr;gap:14px}
+.loyalty-step{display:flex;gap:14px;align-items:flex-start}
+.loyalty-step-icon{width:40px;height:40px;border-radius:12px;background:var(--orange);color:white;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.loyalty-step-text h4{font-size:14px;font-weight:700;color:var(--gray-800);margin:0 0 2px}
+.loyalty-step-text p{font-size:13px;color:var(--gray-500);margin:0;line-height:1.4}
+.loyalty-cta{background:var(--gray-50);border-radius:14px;padding:24px;text-align:center;margin-top:20px}
+.loyalty-cta h3{font-size:16px;font-weight:700;color:var(--gray-800);margin:0 0 6px}
+.loyalty-cta p{font-size:13px;color:var(--gray-500);margin:0 0 14px;line-height:1.4}
+.loyalty-cta-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--orange);color:white;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+.loyalty-cta-btn:active{transform:scale(.97)}
+
+/* ===== TRABAJA CON NOSOTROS PAGE ===== */
+.careers-hero{background:linear-gradient(145deg,#001a3d 0%,#003080 50%,#004db3 100%);padding:48px 20px 40px;text-align:center;position:relative;overflow:hidden;margin-top:-1px}
+.careers-hero::before{content:'';position:absolute;bottom:-40%;left:-20%;width:70%;height:180%;background:radial-gradient(ellipse,rgba(0,207,255,.1) 0%,transparent 70%);pointer-events:none}
+.careers-hero h1{font-size:26px;font-weight:800;color:white;margin:0 0 8px;line-height:1.2}
+.careers-hero p{font-size:15px;color:rgba(255,255,255,.75);margin:0 auto;line-height:1.5;max-width:440px}
+.careers-content{padding:24px 20px;max-width:600px;margin:0 auto}
+.careers-why{margin-bottom:24px}
+.careers-why h2{font-size:18px;font-weight:800;color:var(--gray-800);margin:0 0 16px;text-align:center}
+.careers-perks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.careers-perk{background:var(--white);border:1px solid var(--gray-100);border-radius:12px;padding:16px;text-align:center;transition:transform .2s}
+.careers-perk:hover{transform:translateY(-2px)}
+.careers-perk .perk-icon{font-size:24px;margin-bottom:8px}
+.careers-perk h4{font-size:13px;font-weight:700;color:var(--gray-800);margin:0 0 4px}
+.careers-perk p{font-size:11px;color:var(--gray-500);margin:0;line-height:1.4}
+.careers-positions h2{font-size:18px;font-weight:800;color:var(--gray-800);margin:0 0 16px;text-align:center}
+.careers-position{background:var(--white);border:1px solid var(--gray-100);border-radius:14px;padding:18px;margin-bottom:12px;transition:box-shadow .2s}
+.careers-position:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.careers-position h3{font-size:15px;font-weight:700;color:var(--gray-800);margin:0 0 4px}
+.careers-position .pos-type{font-size:11px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.careers-position p{font-size:13px;color:var(--gray-500);margin:0;line-height:1.5}
+.careers-apply{background:var(--gray-50);border-radius:14px;padding:24px;text-align:center;margin-top:20px}
+.careers-apply h3{font-size:16px;font-weight:700;color:var(--gray-800);margin:0 0 6px}
+.careers-apply p{font-size:13px;color:var(--gray-500);margin:0 0 14px;line-height:1.4}
+.careers-apply-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--blue);color:white;border:none;border-radius:10px;font-family:'Exo 2',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;transition:transform .15s;-webkit-tap-highlight-color:transparent}
+.careers-apply-btn:active{transform:scale(.97)}

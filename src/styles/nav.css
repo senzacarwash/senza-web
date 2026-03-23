@@ -1,0 +1,50 @@
+/* ===== PROMO BANNER ===== */
+.promo-banner{background:var(--gray-900);padding:8px 20px;text-align:center;position:relative;overflow:hidden}
+
+.promo-text{font-size:12px;font-weight:700;color:white;letter-spacing:.3px;position:relative;z-index:1}
+.promo-text .promo-highlight{font-weight:600;opacity:.85}
+.promo-text .promo-limited{font-size:10px;font-weight:600;opacity:.85;margin-left:4px}
+
+/* ===== NAV ===== */
+.nav{background:var(--white);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:50}
+.nav-logo{display:flex;align-items:center;gap:6px}
+.logo-text{font-size:22px;font-weight:900;color:var(--orange);letter-spacing:2px;line-height:1;font-style:italic}
+.logo-sub{font-size:7px;font-weight:700;color:var(--blue);letter-spacing:3px;text-transform:uppercase;display:block;margin-top:-1px;font-style:italic}
+
+/* Nav menu links — hidden on mobile */
+.nav-menu{display:none;align-items:center;gap:0}
+.nav-menu-link{font-size:12px;font-weight:700;color:var(--gray-700);text-decoration:none;padding:8px 14px;letter-spacing:.3px;text-transform:uppercase;cursor:pointer;transition:color .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.nav-menu-link:hover{color:var(--blue)}
+.nav-menu-link.nav-active{color:var(--blue);pointer-events:none;opacity:.6}
+/* Dropdown wrapper */
+.nav-dropdown{position:relative;display:inline-flex;align-items:center}
+.nav-dropdown .nav-menu-link::after{content:'▾';margin-left:4px;font-size:9px;color:var(--gray-400)}
+.nav-dropdown-menu{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);background:var(--white);border:1px solid var(--gray-200);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);min-width:200px;padding:6px 0;z-index:60}
+.nav-dropdown:hover .nav-dropdown-menu{display:block}
+.nav-dropdown-item{display:block;font-size:12px;font-weight:600;color:var(--gray-700);padding:10px 18px;text-decoration:none;cursor:pointer;transition:background .15s}
+.nav-dropdown-item:hover{background:var(--gray-50);color:var(--blue)}
+
+.nav-right{display:flex;align-items:center;gap:8px}
+
+/* Mobile hamburger menu */
+.nav-hamburger{display:flex;align-items:center;justify-content:center;width:32px;height:32px;cursor:pointer;-webkit-tap-highlight-color:transparent;font-size:20px;color:var(--gray-700);position:relative;top:-1px}
+.nav-hamburger.open .ham-open{display:none}
+.nav-hamburger.open .ham-close{display:inline}
+.nav-hamburger .ham-close{display:none}
+
+.mobile-menu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border-bottom:1px solid var(--gray-200);box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:55;padding:8px 0}
+.mobile-menu.open{display:block}
+.mobile-menu-link{display:block;font-size:14px;font-weight:700;color:var(--gray-700);text-decoration:none;padding:14px 24px;letter-spacing:.3px;text-transform:uppercase;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--gray-100)}
+.mobile-menu-link:hover,.mobile-menu-link:active{background:var(--gray-50);color:var(--blue)}
+.mobile-menu-sub{display:none;padding-left:20px}
+.mobile-menu-sub.open{display:block}
+.mobile-menu-sub .mobile-menu-link{font-size:13px;font-weight:600;color:var(--gray-600);border-bottom:none;padding:10px 24px}
+
+/* ===== NAV AVATAR BUTTON ===== */
+.nav-user{display:flex;align-items:center;gap:8px}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:none;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--blue)}
+.nav-user-name{font-size:11px;font-weight:600;color:var(--gray-600)}
+.nav-avatar{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .2s}
+.nav-avatar:active{transform:scale(.9)}
+.nav-back-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--gray-200);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--gray-600);-webkit-tap-highlight-color:transparent;transition:all .2s}
+.nav-back-btn:active{transform:scale(.9)}

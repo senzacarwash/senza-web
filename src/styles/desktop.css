@@ -1,0 +1,252 @@
+/* ===== DESKTOP RESPONSIVE — 768px+ ===== */
+@media (min-width: 768px) {
+
+  /* --- GLOBAL --- */
+  .nav { padding: 12px 40px; }
+  .nav-logo .logo-text { font-size: 26px; }
+  .nav-logo .logo-sub { font-size: 8px; }
+  .nav-menu { display: flex; }
+  .nav-menu-link { font-size: 11px; padding: 8px 12px; }
+  .nav-hamburger { display: none !important; }
+  .mobile-menu { display: none !important; }
+  .nav-user { display: none !important; }
+  body.member-mode .nav-user { display: flex !important; }
+  body.page-mode .nav-user { display: none !important; }
+  .promo-banner { padding: 10px 40px; }
+  .promo-text { font-size: 13px; }
+
+  /* --- HERO --- */
+  .hero { padding: 48px 40px 40px; text-align: center; }
+  .hero h1 { font-size: 40px; max-width: 600px; margin: 0 auto 14px; }
+  .hero p { font-size: 15px; max-width: 500px; margin: 0 auto; }
+  .hero .btn-hero { margin-top: 20px; padding: 14px 36px; font-size: 14px; }
+  .hero .breadcrumb { text-align: center; }
+
+  /* --- MEMBER HERO --- */
+  .member-hero { padding: 36px 40px 28px; text-align: center; }
+  .member-name { font-size: 30px; }
+
+  /* --- TABS --- */
+  .tabs { justify-content: center; max-width: 600px; margin: 0 auto; border-bottom: 2px solid var(--gray-200); }
+  .tab { flex: none; padding: 14px 32px; font-size: 13px; }
+
+  /* --- PLANS HEADER --- */
+  .plans-header { max-width: 100%; margin: 0 auto; padding: 28px 40px 8px; }
+  .plans-header h2 { font-size: 22px; }
+
+  /* ==============================================
+     PLAN CARDS — 4 columnas, siempre expandidas
+     ============================================== */
+  .plans {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    align-items: stretch;
+  }
+
+  /* Forzar cards expandidas en desktop — flex column to push button to bottom */
+  .plan-card { cursor: default; display: flex; flex-direction: column; }
+  .plan-card .plan-body { max-height: 1200px !important; overflow: visible; flex: 1; display: flex; flex-direction: column; }
+  .plan-card .plan-body .plan-action { margin-top: auto; }
+  .plan-card .expand-arrow { display: none; }
+
+  /* Hover sutil */
+  .plan-card { transition: all .25s, box-shadow .25s; }
+  .plan-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
+
+  /* Why-row (header de card personal) — layout vertical en desktop */
+  .plan-card .why-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 14px 14px;
+    gap: 8px;
+  }
+  .plan-card .why-row .wr-divider { display: none; }
+  .plan-card .why-row .wr-plan { min-width: auto; text-align: center; }
+  .plan-card .why-row .wr-plan-name { font-size: 13px; }
+  .plan-card .why-row .wr-plan-price { font-size: 28px; }
+  .plan-card .why-row .wr-plan-sub { font-size: 9px; }
+  .plan-card .why-row .wr-wash { min-width: auto; }
+  .plan-card .why-row .wr-wash-label { font-size: 8px; }
+  .plan-card .why-row .wr-wash-price { font-size: 14px; }
+  .plan-card .why-row .wr-result { margin-top: 2px; }
+  .plan-card .why-row .wr-badge { font-size: 10px; text-align: center; }
+
+  /* Plan-top (header de card multi) — vertical en desktop */
+  .plan-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px 14px 14px;
+    gap: 4px;
+  }
+  .plan-info { text-align: center; }
+  .plan-pricing { margin-right: 0; align-items: center; }
+  .plan-price-dynamic { margin-right: 0; justify-content: center; min-width: auto; }
+  .plan-dyn-col { align-items: center; }
+
+  /* Feature list — más compacta */
+  .feature-list { padding: 0 12px 6px; }
+  .feature-list li { font-size: 11px; padding: 4px 0; }
+
+  /* Addon section */
+  .addon-section { padding: 8px 12px; }
+  .addon-label { font-size: 9px; }
+  .addon-detail { font-size: 10px; }
+  .interior-included-section { padding: 8px 12px; }
+  .interior-included-label { font-size: 9px; }
+  .interior-included-detail { font-size: 10px; }
+  .interior-included-extra { font-size: 9px; }
+
+  /* Plan action button */
+  .plan-action { padding: 6px 12px 12px; }
+  .btn-subscribe { font-size: 11px; padding: 10px; }
+
+  /* Multi plan cards — también 4 columnas expandidas */
+  #multiPlans {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: stretch;
+  }
+
+  /* Single wash section en cards */
+  .single-wash .sw-price { font-size: 20px; }
+
+  /* --- VEHICLE SELECTOR (Multi) --- */
+  .vehicle-selector { text-align: center; }
+
+  /* === DESKTOP MULTI-VEHICLE REDESIGN === */
+  /* Hide inline desglose on desktop */
+  #multiPlans .plan-desglose { display: none !important; }
+  /* Hide mobile button text, show desktop text */
+  #multiPlans .btn-subscribe .mobile-label { display: none; }
+  #multiPlans .btn-subscribe .desktop-label { display: inline; }
+  /* Desktop multi pricing overlay */
+  #multiPlans .multi-desktop-pricing { display: block; }
+  /* Hide mobile dynamic pricing on desktop */
+  #multiPlans .plan-price-dynamic { display: none !important; }
+  /* Show desktop calculator */
+  .desktop-calc-section { display: block !important; max-width: 700px; margin: 0 auto; padding: 24px 40px 32px; }
+  .desktop-calc-section .dcalc-card { background: var(--white); border: 2px solid var(--gray-200); border-radius: 14px; padding: 28px 24px; }
+  .desktop-calc-section .dcalc-title { font-size: 18px; font-weight: 800; color: var(--gray-900); text-align: center; margin-bottom: 4px; }
+  .desktop-calc-section .dcalc-sub { font-size: 12px; color: var(--gray-500); text-align: center; margin-bottom: 20px; }
+  .desktop-calc-section .dcalc-fields { display: flex; gap: 14px; margin-bottom: 20px; }
+  .desktop-calc-section .dcalc-field { flex: 1; }
+  .desktop-calc-section .dcalc-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--gray-500); margin-bottom: 6px; }
+  .desktop-calc-section .dcalc-select { width: 100%; padding: 12px 14px; border: 2px solid var(--gray-200); border-radius: 10px; font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 600; color: var(--gray-900); background: var(--white); appearance: auto; cursor: pointer; transition: border-color .2s; }
+  .desktop-calc-section .dcalc-select:focus { outline: none; border-color: var(--blue); }
+  .desktop-calc-section .dcalc-result { display: none; }
+  .desktop-calc-section .dcalc-result.visible { display: block; }
+  .desktop-calc-section .dcalc-btn { display: block; width: 100%; padding: 14px; background: var(--orange); color: white; border: none; border-radius: 10px; font-family: 'Exo 2', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: .3px; margin-top: 16px; transition: background .2s; }
+  .desktop-calc-section .dcalc-btn:hover { background: var(--orange-light); }
+
+  /* --- MULTI CTA (en panel personal) --- */
+  .multi-cta { max-width: 600px; margin: 4px auto 20px; }
+
+  /* --- FAQ --- */
+  .faq-list { max-width: 600px; margin: 0 auto; }
+  .faq-section { max-width: 600px; margin: 0 auto; }
+  .faq-wrap-desktop { max-width: 600px; margin-left: auto !important; margin-right: auto !important; padding-left: 20px; padding-right: 20px; }
+  #panel-personal > div:last-child,
+  #panel-multi > div:nth-last-child(2) { max-width: 700px; margin-left: auto; margin-right: auto; }
+
+  /* --- CHATBOT / FAQ ACCORDIONS --- */
+  .chatbot-accordion { max-width: 520px; margin-left: auto; margin-right: auto; }
+  .faq-accordion { max-width: 600px; margin-left: auto; margin-right: auto; }
+
+  /* --- CHECKOUT OVERLAY — modal centrado --- */
+  .checkout-overlay { background: rgba(0,0,0,.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .checkout-overlay.active { transform: translateX(0); }
+  .checkout-overlay .co-header { max-width: 560px; margin: 40px auto 0; border-radius: 14px 14px 0 0; position: relative; }
+  .checkout-overlay .co-progress { max-width: 560px; margin: 0 auto; background: var(--white); }
+  .checkout-overlay .co-step-labels { max-width: 560px; margin: 0 auto; background: var(--white); }
+  .checkout-overlay .co-summary { max-width: 560px; margin: 0 auto; border-radius: 0; box-shadow: none; border-left: 1px solid var(--gray-200); border-right: 1px solid var(--gray-200); }
+  .checkout-overlay .co-summary .co-summary-plan { font-size: 16px; letter-spacing: 1.5px; }
+  .checkout-overlay .co-summary .co-summary-price { font-size: 32px; }
+  .checkout-overlay .co-summary .co-summary-price span { font-size: 14px; }
+  .checkout-overlay .co-summary .co-summary-detail { font-size: 13px; }
+  .checkout-overlay .co-summary .co-summary-vline { font-size: 13px; }
+  .checkout-overlay .co-summary .co-summary-total-row .stv { font-size: 22px; }
+  .checkout-overlay .co-form { max-width: 560px; margin: 0 auto; background: var(--white); padding-bottom: 40px; border-radius: 0 0 14px 14px; border-left: 1px solid var(--gray-200); border-right: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); }
+  .checkout-overlay .co-success { max-width: 560px; margin: 0 auto; background: var(--white); border-radius: 0 0 14px 14px; }
+
+  /* --- OVERLAYS (Mi Membresía) — modal centrado --- */
+  .overlay { background: rgba(0,0,0,.5); }
+  .overlay.active { transform: translateX(0); }
+  .overlay .overlay-header { max-width: 520px; margin: 40px auto 0; border-radius: 14px 14px 0 0; position: relative; }
+  .overlay .overlay-body { max-width: 520px; margin: 0 auto; background: var(--gray-50); border-radius: 0 0 14px 14px; padding-bottom: 40px; }
+
+  /* --- MODAL --- */
+  .modal-backdrop { align-items: center; }
+  .modal { border-radius: 20px; max-width: 440px; }
+
+  /* --- DASHBOARD NAV (Mi Membresía) --- */
+  .dash-nav { justify-content: center; gap: 8px; padding: 16px 40px; flex-wrap: wrap; }
+  .dash-tab { font-size: 12px; padding: 8px 16px; }
+
+  /* --- SECTIONS (Mi Membresía) --- */
+  .section { max-width: 520px; margin: 0 auto; padding: 20px 24px 28px; }
+
+  /* --- FOOTER --- */
+  .footer { padding: 32px 40px; }
+  .footer p { font-size: 11px; }
+
+  /* --- HOW IT WORKS (Multi) --- */
+  .how-section { max-width: 700px; margin: 0 auto; }
+
+  /* --- WHY MEMBERSHIP --- */
+  .why-wrap { max-width: 700px; margin-left: auto; margin-right: auto; }
+  .why-note-standalone { max-width: 600px; margin-left: auto; margin-right: auto; }
+
+  /* --- BACK TO PERSONAL LINK (Multi) --- */
+  #panel-multi > div:last-child { max-width: 520px; margin-left: auto; margin-right: auto; }
+
+  /* --- CHATBOT FAB --- */
+  .chat-fab { right: 24px; bottom: 24px; }
+  .chat-fab-panel { right: 24px; bottom: 90px; max-width: 380px; }
+
+  /* --- TOAST --- */
+  .toast { top: 80px; }
+}
+
+/* ===== DESKTOP LARGE — 1024px+ ===== */
+@media (min-width: 1024px) {
+  .hero h1 { font-size: 48px; max-width: 700px; }
+  .hero p { font-size: 16px; max-width: 560px; }
+  .hero { padding: 56px 60px 48px; }
+
+  .plans { max-width: 1200px; gap: 18px; padding: 16px 40px; }
+  #multiPlans { max-width: 1200px; }
+
+  .nav { padding: 14px 60px; }
+  .nav-menu-link { font-size: 12px; padding: 8px 16px; }
+  .footer { padding: 36px 60px; }
+
+  .dash-nav { gap: 10px; padding: 18px 60px; }
+  .dash-tab { padding: 10px 20px; font-size: 12px; }
+
+  .plans-header { padding: 28px 60px 8px; }
+
+  /* Feature list ligeramente más grande en pantallas grandes */
+  .feature-list li { font-size: 12px; }
+  .btn-subscribe { font-size: 12px; padding: 11px; }
+
+  /* --- NEW PAGES DESKTOP --- */
+  .about-hero h1, .location-hero h1, .loyalty-hero h1, .careers-hero h1 { font-size: 36px; }
+  .about-hero, .location-hero, .loyalty-hero, .careers-hero { padding: 64px 40px 52px; }
+  .about-section, .location-content, .loyalty-content, .careers-content { max-width: 700px; padding: 40px; }
+  .about-values { grid-template-columns: repeat(3,1fr); }
+  .about-stats { grid-template-columns: repeat(4,1fr); }
+  .careers-perks { grid-template-columns: repeat(4,1fr); }
+  .location-map-wrap iframe { height: 360px; }
+  .loyalty-card-visual .lc-stamps { grid-template-columns: repeat(10,1fr); }
+  .tech-section { max-width: 900px; }
+  .tech-desktop-img { display: block; text-align: center; }
+  .tech-mobile { display: none; }
+}
