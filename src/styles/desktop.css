@@ -16,11 +16,10 @@
   .promo-text { font-size: 13px; }
 
   /* --- HERO --- */
-  .hero { padding: 48px 40px 40px; text-align: center; }
+  .hero { padding: 48px 40px 40px; text-align: center; background-image: url('/images/hero-desktop.webp'); }
   .hero h1 { font-size: 40px; max-width: 600px; margin: 0 auto 14px; }
   .hero p { font-size: 15px; max-width: 500px; margin: 0 auto; }
   .hero .btn-hero { margin-top: 20px; padding: 14px 36px; font-size: 14px; }
-  .hero .breadcrumb { text-align: center; }
 
   /* --- MEMBER HERO --- */
   .member-hero { padding: 36px 40px 28px; text-align: center; }
