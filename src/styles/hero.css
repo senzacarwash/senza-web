@@ -1,6 +1,6 @@
 /* ===== HERO — shared base, content swaps ===== */
 .hero{background:url('/images/hero-mobile.webp') center center / cover no-repeat;padding:32px 24px 28px;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(0,26,61,.8) 0%,rgba(0,48,128,.78) 50%,rgba(0,77,179,.75) 100%);z-index:1}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(0,26,61,.8) 0%,rgba(0,48,128,.7) 50%,rgba(0,77,179,.6) 100%);z-index:1}
 .hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 120% 80% at 80% 70%,rgba(255,59,0,.1) 0%,transparent 60%);z-index:1}
 .hero *{position:relative;z-index:2}
 .hero .breadcrumb{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:12px}
