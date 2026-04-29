@@ -421,20 +421,10 @@
 
 /* Bottom sheet sólo en mobile real (≤480px) — NO en desktop con ventana estrecha */
 @media (max-width: 480px) {
-  .plan-picker-overlay { align-items: flex-end; padding: 0; }
-  .pp-modal {
-    max-width: 100%; max-height: 88vh;
-    border-radius: 18px 18px 0 0;
-    transform: translateY(40px);
-  }
-  .plan-picker-overlay.is-open .pp-modal { transform: translateY(0); }
-  .pp-header { position: relative; padding-top: 24px; }
-  .pp-header::before {
-    content: ""; position: absolute; top: 8px; left: 50%;
-    transform: translateX(-50%);
-    width: 36px; height: 4px; border-radius: 2px;
-    background: var(--gray-200);
-  }
+  /* Modal siempre centrado en mobile, sin bottom sheet.
+     Solo se ajustan padding del backdrop y tamaños de typografía. */
+  .plan-picker-overlay { padding: 16px; }
+  .pp-modal { max-height: calc(100vh - 32px); }
   .pp-list { padding: 10px; }
   .pp-card { padding: 14px 16px; }
   .pp-card-name { font-size: 15px; }
