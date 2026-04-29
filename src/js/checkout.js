@@ -810,8 +810,8 @@ function renderPlanPicker() {
   var carCount = checkoutMode === 'multi' ? multiCarCount : 1;
 
   sub.textContent = checkoutMode === 'multi'
-    ? 'Para ' + carCount + ' vehículos · sin perder tus datos.'
-    : 'Cambia tu plan sin perder tus datos.';
+    ? 'Para ' + carCount + ' vehículos.'
+    : 'Cambia tu plan.';
 
   var html = '';
   for (var i = 0; i < planOrder.length; i++) {
