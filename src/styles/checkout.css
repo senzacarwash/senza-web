@@ -347,6 +347,9 @@
   border-color: var(--tier);
   background: var(--tier-bg-soft);
 }
+.pp-card.is-current .pp-card-price-wrap {
+  padding-right: 28px;
+}
 
 .pp-tier-bar {
   width: 4px; border-radius: 2px;

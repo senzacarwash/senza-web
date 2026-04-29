@@ -809,9 +809,13 @@ function renderPlanPicker() {
   var planOrder = ['ultimate', 'supreme', 'deluxe', 'basic'];
   var carCount = checkoutMode === 'multi' ? multiCarCount : 1;
 
-  sub.textContent = checkoutMode === 'multi'
-    ? 'Para ' + carCount + ' vehículos.'
-    : 'Cambia tu plan.';
+  if (checkoutMode === 'multi') {
+    sub.textContent = 'Para ' + carCount + ' vehículos.';
+    sub.style.display = '';
+  } else {
+    sub.textContent = '';
+    sub.style.display = 'none';
+  }
 
   var html = '';
   for (var i = 0; i < planOrder.length; i++) {
