@@ -29,9 +29,19 @@ const planColors = {
 const planPrices = { ultimate:39, supreme:34, deluxe:30, basic:25 };
 const planNames = { ultimate:'Ultimate', supreme:'Supreme', deluxe:'Deluxe', basic:'Basic' };
 
+// Descripciones incrementales para el plan picker (Issue #25).
+// Fuente de verdad: brief v5 sección "Servicios por Plan" + decisión visual 29 Abr 2026.
+const planDescriptions = {
+  ultimate: 'Todo lo de Supreme + Ultimate Shine y 2 limpiezas interiores/mes.',
+  supreme:  'Todo lo de Deluxe + lavado de chasis y Supreme Wax.',
+  deluxe:   'Todo lo de Basic + lavado de ruedas y espuma activa.',
+  basic:    'Lavado y secado esencial.'
+};
+
 window.planColors = planColors;
 window.planPrices = planPrices;
 window.planNames = planNames;
+window.planDescriptions = planDescriptions;
 
 // ITBMS Panamá 7% (Ley 8 de 2010, Código Fiscal art. 1057-V)
 const ITBMS_RATE = 0.07;
@@ -764,6 +774,123 @@ function restorePromoUI() {
   }
 }
 
+// ====================================================================
+// ===== PLAN PICKER OVERLAY (Issue #25) =====
+// Permite cambiar de plan desde el paso Resumen sin perder datos.
+// Se reusa updateSummary() y renderResumen() para refrescar UI:
+//   - updateSummary(): refresca la card sticky .co-summary arriba
+//   - renderResumen(): refresca el bloque "Tu plan" del cart + recalcula
+//                       ITBMS, código de descuento aplicado, breakdown.
+// El código de descuento aplicado y datos del cliente/vehículos se
+// preservan automáticamente porque viven en otras funciones.
+// ====================================================================
+
+function openPlanPicker() {
+  renderPlanPicker();
+  var overlay = document.getElementById('planPickerOverlay');
+  if (!overlay) return;
+  overlay.classList.add('is-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePlanPicker() {
+  var overlay = document.getElementById('planPickerOverlay');
+  if (!overlay) return;
+  overlay.classList.remove('is-open');
+  document.body.style.overflow = '';
+}
+
+function renderPlanPicker() {
+  var list = document.getElementById('planPickerList');
+  var sub  = document.getElementById('planPickerSub');
+  if (!list || !sub) return;
+
+  // Orden DESCENDENTE consistente con el home (Ultimate primero)
+  var planOrder = ['ultimate', 'supreme', 'deluxe', 'basic'];
+  var carCount = checkoutMode === 'multi' ? multiCarCount : 1;
+
+  sub.textContent = checkoutMode === 'multi'
+    ? 'Para ' + carCount + ' vehículos · sin perder tus datos.'
+    : 'Cambia tu plan sin perder tus datos.';
+
+  var html = '';
+  for (var i = 0; i < planOrder.length; i++) {
+    var planKey = planOrder[i];
+    var p = window.plans[planKey];
+    var isCurrent = planKey === selectedPlan;
+    var total, breakdownHtml = '';
+
+    if (checkoutMode === 'multi') {
+      total = p.full + p.discounted * (carCount - 1);
+      breakdownHtml = '<div class="pp-card-breakdown">'
+        + carCount + ' autos · $' + p.full + ' + ' + (carCount - 1) + '× $' + p.discounted
+        + '</div>';
+    } else {
+      total = p.full;
+    }
+
+    html += '<button type="button" class="pp-card pp-tier-' + planKey + (isCurrent ? ' is-current' : '') + '" '
+      + 'onclick="selectPlanFromPicker(\'' + planKey + '\')">'
+      + '<div class="pp-tier-bar"></div>'
+      + '<div class="pp-card-body">'
+      +   '<div class="pp-card-info">'
+      +     '<div class="pp-card-name">' + planNames[planKey] + '</div>'
+      +     '<p class="pp-card-desc">' + planDescriptions[planKey] + '</p>'
+      +   '</div>'
+      +   '<div class="pp-card-price-wrap">'
+      +     '<div class="pp-card-price">$' + total + '<span class="per">/mes</span></div>'
+      +     '<span class="pp-itbms">+ ITBMS</span>'
+      +     breakdownHtml
+      +   '</div>'
+      + '</div>'
+      + '<div class="pp-current-check" aria-hidden="true">'
+      +   '<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'
+      +     '<path d="M2 7L6 11L12 3"/>'
+      +   '</svg>'
+      + '</div>'
+      + '</button>';
+  }
+  list.innerHTML = html;
+}
+
+function selectPlanFromPicker(planKey) {
+  if (planKey === selectedPlan) {
+    closePlanPicker();
+    return;
+  }
+  selectedPlan = planKey;
+  window.selectedPlan = selectedPlan;
+  // Re-render del paso Resumen y de la card sticky de arriba.
+  // Estas dos funciones recalculan ITBMS, descuento aplicado, y total.
+  updateSummary();
+  renderResumen();
+  closePlanPicker();
+  showPlanToast('Plan actualizado a ' + planNames[planKey]);
+}
+
+function showPlanToast(msg) {
+  var t = document.getElementById('planPickerToast');
+  var txt = document.getElementById('planPickerToastText');
+  if (!t || !txt) return;
+  txt.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showPlanToast._t);
+  showPlanToast._t = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+
+// Listeners globales — ESC y click en backdrop cierran el picker.
+// Verifican is-open antes de actuar para no interferir con otros overlays.
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  var overlay = document.getElementById('planPickerOverlay');
+  if (overlay && overlay.classList.contains('is-open')) closePlanPicker();
+});
+document.addEventListener('click', function(e) {
+  var overlay = document.getElementById('planPickerOverlay');
+  if (!overlay || !overlay.classList.contains('is-open')) return;
+  if (e.target === overlay) closePlanPicker();
+});
+
 // Expose globally
 window.openCheckout = openCheckout;
 window.closeCheckout = closeCheckout;
@@ -788,6 +915,10 @@ window.renderProgress = renderProgress;
 window.updateProgressUI = updateProgressUI;
 window.renderResumen = renderResumen;
 window.updateCartCTA = updateCartCTA;
+window.openPlanPicker = openPlanPicker;
+window.closePlanPicker = closePlanPicker;
+window.selectPlanFromPicker = selectPlanFromPicker;
+window.renderPlanPicker = renderPlanPicker;
 window.editVehicles = editVehicles;
 window.editCustomer = editCustomer;
 window.goToPayment = goToPayment;
