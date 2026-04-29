@@ -129,3 +129,13 @@
 .plan-card[data-tier="supreme"]{border-color:var(--orange)}
 .plan-card[data-tier="deluxe"]{border-color:var(--blue)}
 .plan-card[data-tier="basic"]{border-color:var(--gray-300)}
+
+/* ITBMS microcopy — sutil, gris claro, no domina */
+.wr-tax-inline{font-size:9px;font-weight:600;color:var(--gray-400,#9CA3AF) !important;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap;margin-left:4px}
+/* Tighten on Multi cards mobile (less horizontal room) */
+#multiPlans .plan-price-row{align-items:baseline;flex-wrap:wrap;justify-content:center}
+#multiPlans .plan-price-row .wr-tax-inline{margin-left:3px}
+/* Inside checkout summary banner */
+.co-summary-price .wr-tax-inline{margin-left:4px}
+/* Mi Membresía plan-detail — tax sits inline next to /mes */
+.plan-detail-per .wr-tax-inline{margin-left:2px}

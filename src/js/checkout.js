@@ -92,12 +92,12 @@ function updateSummary() {
   document.getElementById('coSummaryPlan').style.color = planColors[selectedPlan];
 
   if (checkoutMode === 'personal') {
-    document.getElementById('coSummaryPrice').innerHTML = '$' + p.full + '<span>/mes</span>';
+    document.getElementById('coSummaryPrice').innerHTML = '$' + p.full + '<span>/mes</span><span class="wr-tax-inline">+ ITBMS</span>';
     document.getElementById('coSummaryDetail').textContent = 'Membresía Personal · Lavados ilimitados · Cancela cuando quieras';
     document.getElementById('coSummaryDetail').style.display = '';
     document.getElementById('coSummaryVehicles').style.display = 'none';
     document.getElementById('coSummaryTotalRow').style.display = 'none';
-    document.getElementById('coTermsPrice').textContent = '$' + p.full + '/mes';
+    document.getElementById('coTermsPrice').innerHTML = '$' + p.full + '/mes <span class="wr-tax-inline">+ ITBMS</span>';
     selectedPrice = p.full;
   } else {
     document.getElementById('coSummaryPrice').innerHTML = '';
@@ -105,9 +105,9 @@ function updateSummary() {
     document.getElementById('coSummaryDetail').style.display = '';
     document.getElementById('coSummaryVehicles').style.display = 'none';
     var total = p.full + (multiCarCount - 1) * p.discounted;
-    document.getElementById('coSummaryTotal').textContent = '$' + total;
+    document.getElementById('coSummaryTotal').innerHTML = '$' + total + ' <span class="wr-tax-inline">+ ITBMS</span>';
     document.getElementById('coSummaryTotalRow').style.display = '';
-    document.getElementById('coTermsPrice').textContent = '$' + total + '/mes';
+    document.getElementById('coTermsPrice').innerHTML = '$' + total + '/mes <span class="wr-tax-inline">+ ITBMS</span>';
     selectedPrice = total;
   }
 }
@@ -128,7 +128,7 @@ function updateCoCalc() {
     html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px"><span style="color:var(--gray-600)">' + lbl + extra + '</span><span style="font-weight:700;color:var(--gray-900)">$' + price + '/mes</span></div>';
   }
   document.getElementById('coCalcLines').innerHTML = html;
-  document.getElementById('coCalcTotal').textContent = '$' + total;
+  document.getElementById('coCalcTotal').innerHTML = '$' + total + ' <span class="wr-tax-inline">+ ITBMS</span>';
   var savings = (count * p.full) - total;
   document.getElementById('coCalcSavings').textContent = '$' + savings + '/mes';
   document.getElementById('coCalcPlanName').textContent = p.name.toUpperCase();
@@ -378,7 +378,7 @@ function processPayment() {
     document.getElementById('successMultiCars').innerHTML = carsHtml;
   }
 
-  document.getElementById('successPrice').textContent = '$' + selectedPrice + '/mes';
+  document.getElementById('successPrice').innerHTML = '$' + selectedPrice + '/mes <span class="wr-tax-inline">+ ITBMS</span>';
   currentStep = 4;
   updateStepUI();
   document.getElementById('checkoutOverlay').scrollTop = 0;
