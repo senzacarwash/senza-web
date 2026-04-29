@@ -1517,8 +1517,90 @@
     </div>
   </div>
 
-  <!-- STEP 3: Payment -->
+  <!-- STEP 3: Resumen / Cart -->
   <div class="co-step-panel" id="step3">
+    <div class="cart">
+      <p class="cart-intro">Estás a un paso de obtener lavados ilimitados.<br>Verifica que todo esté correcto antes de pagar.</p>
+
+      <!-- Bloque Plan -->
+      <div class="cart-block">
+        <div class="cart-block-header">
+          <div class="cart-block-title">
+            <div class="cart-block-icon orange">⚡</div>
+            <span>Tu plan</span>
+          </div>
+          <!-- TEMPORAL — Botón "Editar" del Plan removido. Pendiente: implementar overlay con plan picker
+               según decisión 29 Abr. Ver issue #25 en SENZA_PROJECT_BRIEF_v5.md sección de issues. -->
+        </div>
+        <div class="cart-plan-name" id="cartPlanName">SUPREME</div>
+        <p class="cart-plan-detail" id="cartPlanDetail">Membresía Personal · Lavados ilimitados · Cancela cuando quieras</p>
+        <div class="cart-plan-breakdown" id="cartBreakdown"></div>
+      </div>
+
+      <!-- Bloque Cliente -->
+      <div class="cart-block">
+        <div class="cart-block-header">
+          <div class="cart-block-title">
+            <div class="cart-block-icon green">👤</div>
+            <span>Tus datos</span>
+          </div>
+          <a class="cart-edit" onclick="editCustomer()">Editar</a>
+        </div>
+        <div class="cart-customer">
+          <div class="cart-customer-row"><span class="ico">●</span><span class="val" id="cartCustomerName">—</span></div>
+          <div class="cart-customer-row"><span class="ico">✉</span><span class="val" id="cartCustomerEmail">—</span></div>
+          <div class="cart-customer-row"><span class="ico">☎</span><span class="val" id="cartCustomerPhone">—</span></div>
+        </div>
+      </div>
+
+      <!-- Bloque Vehículos -->
+      <div class="cart-block">
+        <div class="cart-block-header">
+          <div class="cart-block-title">
+            <div class="cart-block-icon">🚗</div>
+            <span id="cartVehiclesTitle">Tu vehículo</span>
+          </div>
+          <a class="cart-edit" onclick="editVehicles()">Editar</a>
+        </div>
+        <div id="cartVehicles"></div>
+      </div>
+
+      <!-- Consents -->
+      <div class="cart-consents">
+        <label class="cart-checkbox required">
+          <input type="checkbox" id="chkTerms" onchange="updateCartCTA()">
+          <div class="cart-checkbox-content">
+            <div class="cart-checkbox-label">
+              Acepto los <a href="#" onclick="event.preventDefault()">Términos y Condiciones</a> y autorizo a Senza Car Wash a debitar mensualmente el monto del plan en mi tarjeta hasta que cancele mi suscripción.
+            </div>
+          </div>
+        </label>
+        <label class="cart-checkbox">
+          <input type="checkbox" id="chkHolder">
+          <div class="cart-checkbox-content">
+            <div class="cart-checkbox-label">Soy el titular de la tarjeta con la que voy a pagar</div>
+            <div class="cart-checkbox-helper">Marca esta casilla para autocompletar tus datos en el siguiente paso. Si no la marcas, deberás ingresar los datos del titular en el formulario de pago.</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- CTA -->
+      <div class="cart-btn-wrapper">
+        <button class="cart-btn-primary" id="btnContinueToPayment" disabled onclick="goToPayment()">Continuar al pago →</button>
+        <div class="cart-btn-tooltip" id="cartCtaTooltip">Acepta los términos para continuar</div>
+      </div>
+      <button class="cart-btn-secondary" onclick="goToPrevStep()">← Volver</button>
+
+      <p class="cart-footer">
+        <span class="lock">🔒</span>
+        Pagos procesados de forma segura por Billcentrix.<br>
+        Tus datos de tarjeta nunca pasan por servidores de Senza.
+      </p>
+    </div>
+  </div>
+
+  <!-- STEP 4: Payment (Billcentrix iframe — mockup) -->
+  <div class="co-step-panel" id="step4">
     <div class="co-form">
       <div class="co-section">
         <div class="co-section-title"><div class="co-section-icon orange">💳</div>Método de pago</div>
@@ -1558,14 +1640,17 @@
         </div>
       </div>
 
-      <!-- Terms -->
-      <div class="co-terms" id="coTerms" onclick="toggleTerms()">
-        <div class="co-checkbox" id="coCheck"></div>
-        <div class="co-terms-text">Acepto que se cobre <strong id="coTermsPrice">$34/mes <span class="wr-tax-inline">+ ITBMS</span></strong> a mi tarjeta de forma recurrente. Puedo cancelar en cualquier momento sin penalidad.</div>
+      <!-- TEMPORAL — REMOVER CUANDO SE INTEGRE BC REAL -->
+      <div class="bc-demo-toggle">
+        <label class="bc-demo-toggle-label">
+          <input type="checkbox" id="bcDemoFailure">
+          <span>🧪 Demo: simular fallo del pago</span>
+        </label>
+        <div class="bc-demo-note">Solo para demostración. Remover al integrar Billcentrix real.</div>
       </div>
 
-      <button class="co-btn-primary" id="coPayBtn" onclick="processPayment()" disabled>Activar Membresía →</button>
-      <button class="co-btn-secondary" onclick="goToPrevStep()">← Volver</button>
+      <button class="co-btn-primary" id="coPayBtn" onclick="processPayment()">Pagar ahora →</button>
+      <button class="co-btn-secondary" onclick="goToPrevStep()">← Volver al resumen</button>
 
       <div style="text-align:center;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:6px">
         <span style="font-size:10px;color:var(--gray-400)">🔒 Tus datos están protegidos con encriptación SSL</span>
@@ -1573,23 +1658,24 @@
     </div>
   </div>
 
-  <!-- STEP 4: Success -->
-  <div class="co-step-panel" id="step4">
-    <div class="co-success">
+  <!-- STEP 5: Result (Success / Failure) -->
+  <div class="co-step-panel" id="step5">
+    <!-- Success state -->
+    <div class="co-result co-result-success" id="resultSuccess">
       <div class="co-success-icon">✓</div>
-      <h2>¡Bienvenido a Senza!</h2>
-      <p>Tu membresía está activa. Ya puedes disfrutar de lavados ilimitados.</p>
-      <div class="co-success-detail">
-        <div class="co-success-row"><span class="label">Membresía</span><span class="value" id="successPlan">Supreme</span></div>
-        <div class="co-success-row"><span class="label">Titular</span><span class="value" id="successName">—</span></div>
-        <div id="successSingleCar">
-          <div class="co-success-row"><span class="label">Vehículo</span><span class="value" id="successCar">—</span></div>
-          <div class="co-success-row"><span class="label">Placa</span><span class="value" id="successPlaca">—</span></div>
-        </div>
-        <div id="successMultiCars" style="display:none" class="co-success-cars"></div>
-        <div class="co-success-row" style="border-top:1px solid var(--gray-100);padding-top:10px;margin-top:4px"><span class="label">Cargo mensual</span><span class="value" style="color:var(--green)" id="successPrice">$34/mes <span class="wr-tax-inline">+ ITBMS</span></span></div>
-      </div>
+      <h2>¡Estás dentro!</h2>
+      <p>Te enviamos un email a <strong id="successEmailDisplay">tu correo</strong> con tu Membership Card y un link para crear tu contraseña.</p>
+      <p class="co-result-subtext">Revisa también tu carpeta de spam.</p>
       <button class="co-btn-primary" onclick="closeCheckout()">Volver al inicio</button>
+    </div>
+
+    <!-- Failure state -->
+    <div class="co-result co-result-failure" id="resultFailure" style="display:none">
+      <div class="co-failure-icon">!</div>
+      <h2>El pago no pudo procesarse</h2>
+      <p>Verifica los datos de tu tarjeta o intenta con otra. Tus datos de plan y vehículos están guardados.</p>
+      <button class="co-btn-primary" onclick="retryPayment()">Intentar de nuevo</button>
+      <button class="co-btn-secondary" onclick="closeCheckout()">Volver al inicio</button>
     </div>
   </div>
 </div>
