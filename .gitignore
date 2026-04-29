@@ -1,2 +1,34 @@
+# Dependencias
 node_modules
+
+# Build outputs
 dist
+.vite/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Variables de entorno (nunca commitear secretos)
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Notas de sesión / docs personales (no parte del código)
+claude-code-prompt-changes.md
+SENZA_PROJECT_BRIEF_*.md
+CLAUDE_CODE_PLAYBOOK_*.md
+senza-*-mockup.html
+
+# Netlify CLI
+.netlify
