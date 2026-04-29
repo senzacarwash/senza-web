@@ -1,3 +1,6 @@
+import intlTelInput from 'intl-tel-input';
+import 'intl-tel-input/styles';
+
 // ===== CHECKOUT FLOW =====
 // Pasos:
 //   0 = Multi calculator (solo si multi sin calc previa)
@@ -13,6 +16,8 @@ let checkoutMode = 'personal'; // 'personal' or 'multi'
 let multiCarCount = 2;
 let multiCalcDone = false; // came from home calc → skip step 0
 let coCalcCount = 2;
+
+let iti = null; // intl-tel-input instance
 
 window.currentStep = currentStep;
 window.selectedPlan = selectedPlan;
@@ -114,7 +119,7 @@ function guardarDatosCheckout() {
       firstName: nameEl ? nameEl.value : '',
       lastName: lastEl ? lastEl.value : '',
       email: emailEl ? emailEl.value : '',
-      phone: phoneEl ? phoneEl.value : ''
+      phone: iti ? (iti.getNumber() || phoneEl.value) : (phoneEl ? phoneEl.value : '')
     },
     vehicles: collectVehicles(),
     discountCode: appliedCode ? {
@@ -157,7 +162,7 @@ function buildVehicleForm(index, total) {
   }
   return '<div class="co-section">' +
     '<div class="co-section-title"><div class="co-vehicle-num ' + numClass + '">' + (index+1) + '</div>' + label + discountText + '</div>' +
-    '<div class="co-field"><label>Placa del vehículo</label><input type="text" id="coPlaca' + index + '" placeholder="Ej: ABC-1234" style="text-transform:uppercase" oninput="this.classList.remove(\'error\');updateSummaryPlacas()"><div class="field-error">Ingresa la placa</div></div>' +
+    '<div class="co-field"><label>Placa del vehículo</label><input type="text" id="coPlaca' + index + '" placeholder="AB1234" maxlength="6" oninput="formatPlaca(this);updateSummaryPlacas()"><div class="field-help">Formato Panamá: <strong>AB1234</strong> · <strong>123456</strong> (placas antiguas)</div><div class="field-error">Ingresa la placa</div></div>' +
     '<div class="co-row"><div class="co-field"><label>Marca</label><input type="text" id="coMarca' + index + '" placeholder="Ej: Toyota" oninput="this.classList.remove(\'error\');updateSummaryPlacas()"></div>' +
     '<div class="co-field"><label>Modelo</label><input type="text" id="coModelo' + index + '" placeholder="Ej: Corolla"></div></div>' +
     '<div class="co-field"><label>Color</label><input type="text" id="coColor' + index + '" placeholder="Ej: Blanco"></div>' +
@@ -169,6 +174,7 @@ function renderVehicleForms() {
   var html = '';
   for (var i = 0; i < count; i++) html += buildVehicleForm(i, count);
   document.getElementById('vehicleFormsContainer').innerHTML = html;
+  setupVehicleListeners();
 }
 
 // Update summary vehicle labels with plate numbers when available
@@ -324,9 +330,11 @@ function renderResumen() {
     html += '<div class="cart-plan-line">'
       + '<span class="label">Auto 1 (precio base)</span>'
       + '<span class="val">$' + p.full.toFixed(2) + '</span></div>';
-    html += '<div class="cart-plan-line">'
-      + '<span class="label">Auto 2 al ' + carCount + ' (c/u)</span>'
-      + '<span class="val">$' + p.discounted.toFixed(2) + '</span></div>';
+    for (var i = 2; i <= carCount; i++) {
+      html += '<div class="cart-plan-line">'
+        + '<span class="label">Auto ' + i + ' (descuento)</span>'
+        + '<span class="val">$' + p.discounted.toFixed(2) + '</span></div>';
+    }
     var savings = (p.full - p.discounted) * (carCount - 1);
     html += '<div class="cart-plan-line discount">'
       + '<span class="label">Ahorro vs. individual</span>'
@@ -371,7 +379,7 @@ function renderResumen() {
   html += '<div class="cart-plan-total">'
     + '<span class="label">Total mensual</span>'
     + '<span class="val">$' + total.toFixed(2) + '<span>/mes</span></span></div>';
-  html += '<div class="cart-plan-tax-note">Incluye ITBMS 7% según Ley fiscal de Panamá</div>';
+  html += '<div class="cart-plan-tax-note">Incluye ITBMS 7%</div>';
   document.getElementById('cartBreakdown').innerHTML = html;
 
   // Sincronizar el componente de promo con el estado actual
@@ -403,7 +411,21 @@ function renderResumen() {
   var fullName = ((nameEl ? nameEl.value : '') + ' ' + (lastEl ? lastEl.value : '')).trim();
   document.getElementById('cartCustomerName').textContent = fullName || '—';
   document.getElementById('cartCustomerEmail').textContent = (emailEl ? emailEl.value : '') || '—';
-  document.getElementById('cartCustomerPhone').textContent = (phoneEl ? phoneEl.value : '') || '—';
+  document.getElementById('cartCustomerPhone').textContent = getPhoneForDisplay();
+}
+
+function getPhoneForDisplay() {
+  var phoneEl = document.getElementById('coPhone');
+  if (!iti) return (phoneEl ? phoneEl.value : '') || '—';
+  try {
+    // Si utils.js ya cargó, usamos formato INTERNATIONAL (más legible: "+507 6666-6666")
+    if (intlTelInput.utils && intlTelInput.utils.numberFormat) {
+      var formatted = iti.getNumber(intlTelInput.utils.numberFormat.INTERNATIONAL);
+      if (formatted) return formatted;
+    }
+  } catch(e) {}
+  // Fallback: E.164 puro o value plano
+  return iti.getNumber() || (phoneEl ? phoneEl.value : '') || '—';
 }
 
 // ===== Cart CTA logic =====
@@ -554,6 +576,11 @@ function goToStep(step) {
 }
 
 function updateStepUI() {
+  // Init intl-tel-input + validation listeners la primera vez que se entra a step 1
+  if (currentStep === 1 && !iti) {
+    initPhoneInput();
+    setupValidationListeners();
+  }
   [0,1,2,3,4,5].forEach(function(i) {
     var panel = document.getElementById('step' + i);
     if (panel) panel.classList.toggle('active', i === currentStep);
@@ -608,23 +635,74 @@ function updateStepUI() {
   }
 }
 
+// Regex compartidos por validateStep + listeners on-blur
+var EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+var PLATE_REGEX = /^([A-Z]{2}[0-9]{4}|[0-9]{6}|T[0-9]{5})$/;
+
+function findFieldError(el) {
+  var field = el.closest('.co-field');
+  return field ? field.querySelector('.field-error') : null;
+}
+
+function setError(el, message) {
+  el.classList.add('error');
+  var errEl = findFieldError(el);
+  if (errEl) {
+    errEl.textContent = message;
+    errEl.style.display = 'block';
+  }
+}
+
+function clearError(el) {
+  el.classList.remove('error');
+  var errEl = findFieldError(el);
+  if (errEl) errEl.style.display = '';
+}
+
 function validateStep(step) {
   var valid = true;
-  function check(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    if (!el.value.trim()) { el.classList.add('error'); valid = false; }
-    else { el.classList.remove('error'); }
-  }
   if (step === 0) {
     // Calc step — defaults are valid
   } else if (step === 1) {
-    check('coName'); check('coLastName'); check('coEmail'); check('coPhone');
+    // Nombre
+    var name = document.getElementById('coName');
+    if (!name.value.trim()) { setError(name, 'Ingresa tu nombre'); valid = false; }
+    else clearError(name);
+    // Apellidos
+    var lastName = document.getElementById('coLastName');
+    if (!lastName.value.trim()) { setError(lastName, 'Ingresa tus apellidos'); valid = false; }
+    else clearError(lastName);
+    // Email
+    var email = document.getElementById('coEmail');
+    var emailVal = email.value.trim();
+    if (!emailVal) { setError(email, 'Ingresa tu correo electrónico'); valid = false; }
+    else if (!EMAIL_REGEX.test(emailVal)) { setError(email, 'Ingresa un correo válido (ej: maria@email.com)'); valid = false; }
+    else clearError(email);
+    // Teléfono
+    var phone = document.getElementById('coPhone');
+    if (!phone.value.trim()) {
+      setError(phone, 'Ingresa tu número de teléfono');
+      valid = false;
+    } else if (iti && !iti.isValidNumber()) {
+      var country = iti.getSelectedCountryData();
+      setError(phone, 'Número no válido para ' + (country.name || 'el país seleccionado'));
+      valid = false;
+    } else {
+      clearError(phone);
+    }
   } else if (step === 2) {
     var count = checkoutMode === 'multi' ? multiCarCount : 1;
     for (var i = 0; i < count; i++) {
-      check('coPlaca' + i);
-      check('coMarca' + i);
+      var placa = document.getElementById('coPlaca' + i);
+      var marca = document.getElementById('coMarca' + i);
+      if (placa) {
+        var placaVal = placa.value;
+        if (!placaVal) { setError(placa, 'Ingresa la placa del vehículo'); valid = false; }
+        else if (!PLATE_REGEX.test(placaVal)) { setError(placa, 'Placa no válida. Formato Panamá: AB1234 o 123456'); valid = false; }
+        else clearError(placa);
+      }
+      if (marca && !marca.value.trim()) { setError(marca, 'Ingresa la marca'); valid = false; }
+      else if (marca) clearError(marca);
     }
   }
   return valid;
@@ -895,6 +973,139 @@ document.addEventListener('click', function(e) {
   if (e.target === overlay) closePlanPicker();
 });
 
+// ===== Auto-format de placa en tiempo real =====
+function formatPlaca(input) {
+  var v = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  input.value = v;
+  if (PLATE_REGEX.test(v)) clearError(input);
+}
+
+// ===== Inicialización del componente intl-tel-input =====
+async function initPhoneInput() {
+  var input = document.getElementById('coPhone');
+  if (!input || iti) return;
+
+  // Cargar i18n español ANTES de instanciar (evita destroy + re-init)
+  var i18nEs = {};
+  try {
+    var i18nMod = await import('intl-tel-input/i18n');
+    if (i18nMod && i18nMod.es) i18nEs = i18nMod.es;
+  } catch(e) {
+    console.warn('Failed to load Spanish i18n module, UI strings will be in English', e);
+  }
+
+  iti = intlTelInput(input, {
+    initialCountry: 'pa',
+    countryOrder: ['pa', 'co', 'cr', 'ec', 'es', 'us', 'mx', 'pe', 've'],
+    separateDialCode: true,
+    strictMode: true,
+    // countryNameLocale usa Intl.DisplayNames del browser para traducir nombres de países a español automáticamente
+    countryNameLocale: 'es',
+    // i18n traduce los UI strings (search placeholder, aria-labels, etc.)
+    i18n: i18nEs,
+    loadUtils: function() { return import('intl-tel-input/utils'); }
+  });
+
+  setupPhoneListeners();
+}
+
+// ===== Listeners on-blur / on-input para validación en tiempo real =====
+function setupPhoneListeners() {
+  var phone = document.getElementById('coPhone');
+  if (!phone) return;
+  phone.addEventListener('input', function() {
+    phone.dataset.touched = 'true';
+    if (iti && iti.isValidNumber()) clearError(phone);
+  });
+  phone.addEventListener('blur', function() {
+    if (phone.dataset.touched !== 'true') return;
+    var v = phone.value.trim();
+    if (!v) {
+      setError(phone, 'Ingresa tu número de teléfono');
+    } else if (iti && !iti.isValidNumber()) {
+      var country = iti.getSelectedCountryData();
+      setError(phone, 'Número no válido para ' + (country.name || 'el país seleccionado'));
+    } else {
+      clearError(phone);
+    }
+  });
+  phone.addEventListener('countrychange', function() {
+    if (phone.dataset.touched === 'true' && phone.value.trim() && iti && iti.isValidNumber()) {
+      clearError(phone);
+    }
+  });
+}
+
+function setupValidationListeners() {
+  // Nombre + Apellidos
+  [
+    { id: 'coName', emptyMsg: 'Ingresa tu nombre' },
+    { id: 'coLastName', emptyMsg: 'Ingresa tus apellidos' }
+  ].forEach(function(cfg) {
+    var el = document.getElementById(cfg.id);
+    if (!el) return;
+    el.addEventListener('input', function() {
+      el.dataset.touched = 'true';
+      if (el.value.trim()) clearError(el);
+    });
+    el.addEventListener('blur', function() {
+      if (el.dataset.touched !== 'true') return;
+      if (!el.value.trim()) setError(el, cfg.emptyMsg);
+      else clearError(el);
+    });
+  });
+  // Email
+  var email = document.getElementById('coEmail');
+  if (email) {
+    email.addEventListener('input', function() {
+      email.dataset.touched = 'true';
+      if (email.value.trim() && EMAIL_REGEX.test(email.value.trim())) clearError(email);
+    });
+    email.addEventListener('blur', function() {
+      if (email.dataset.touched !== 'true') return;
+      var v = email.value.trim();
+      if (!v) setError(email, 'Ingresa tu correo electrónico');
+      else if (!EMAIL_REGEX.test(v)) setError(email, 'Ingresa un correo válido (ej: maria@email.com)');
+      else clearError(email);
+    });
+  }
+  // Phone listeners
+  setupPhoneListeners();
+}
+
+function setupVehicleListeners() {
+  var count = checkoutMode === 'multi' ? multiCarCount : 1;
+  for (var i = 0; i < count; i++) {
+    (function(idx) {
+      var placa = document.getElementById('coPlaca' + idx);
+      var marca = document.getElementById('coMarca' + idx);
+      if (placa) {
+        placa.addEventListener('input', function() {
+          placa.dataset.touched = 'true';
+        });
+        placa.addEventListener('blur', function() {
+          if (placa.dataset.touched !== 'true') return;
+          var v = placa.value;
+          if (!v) setError(placa, 'Ingresa la placa del vehículo');
+          else if (!PLATE_REGEX.test(v)) setError(placa, 'Placa no válida. Formato Panamá: AB1234 o 123456');
+          else clearError(placa);
+        });
+      }
+      if (marca) {
+        marca.addEventListener('input', function() {
+          marca.dataset.touched = 'true';
+          if (marca.value.trim()) clearError(marca);
+        });
+        marca.addEventListener('blur', function() {
+          if (marca.dataset.touched !== 'true') return;
+          if (!marca.value.trim()) setError(marca, 'Ingresa la marca');
+          else clearError(marca);
+        });
+      }
+    })(i);
+  }
+}
+
 // Expose globally
 window.openCheckout = openCheckout;
 window.closeCheckout = closeCheckout;
@@ -936,3 +1147,4 @@ window.onPromoKeyPress = onPromoKeyPress;
 window.applyPromoCode = applyPromoCode;
 window.removePromoCode = removePromoCode;
 window.restorePromoUI = restorePromoUI;
+window.formatPlaca = formatPlaca;
