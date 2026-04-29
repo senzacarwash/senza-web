@@ -119,7 +119,7 @@ function guardarDatosCheckout() {
       firstName: nameEl ? nameEl.value : '',
       lastName: lastEl ? lastEl.value : '',
       email: emailEl ? emailEl.value : '',
-      phone: phoneEl ? phoneEl.value : ''
+      phone: iti ? (iti.getNumber() || phoneEl.value) : (phoneEl ? phoneEl.value : '')
     },
     vehicles: collectVehicles(),
     discountCode: appliedCode ? {
@@ -330,9 +330,11 @@ function renderResumen() {
     html += '<div class="cart-plan-line">'
       + '<span class="label">Auto 1 (precio base)</span>'
       + '<span class="val">$' + p.full.toFixed(2) + '</span></div>';
-    html += '<div class="cart-plan-line">'
-      + '<span class="label">Auto 2 al ' + carCount + ' (c/u)</span>'
-      + '<span class="val">$' + p.discounted.toFixed(2) + '</span></div>';
+    for (var i = 2; i <= carCount; i++) {
+      html += '<div class="cart-plan-line">'
+        + '<span class="label">Auto ' + i + ' (descuento)</span>'
+        + '<span class="val">$' + p.discounted.toFixed(2) + '</span></div>';
+    }
     var savings = (p.full - p.discounted) * (carCount - 1);
     html += '<div class="cart-plan-line discount">'
       + '<span class="label">Ahorro vs. individual</span>'
@@ -409,7 +411,21 @@ function renderResumen() {
   var fullName = ((nameEl ? nameEl.value : '') + ' ' + (lastEl ? lastEl.value : '')).trim();
   document.getElementById('cartCustomerName').textContent = fullName || '—';
   document.getElementById('cartCustomerEmail').textContent = (emailEl ? emailEl.value : '') || '—';
-  document.getElementById('cartCustomerPhone').textContent = (phoneEl ? phoneEl.value : '') || '—';
+  document.getElementById('cartCustomerPhone').textContent = getPhoneForDisplay();
+}
+
+function getPhoneForDisplay() {
+  var phoneEl = document.getElementById('coPhone');
+  if (!iti) return (phoneEl ? phoneEl.value : '') || '—';
+  try {
+    // Si utils.js ya cargó, usamos formato INTERNATIONAL (más legible: "+507 6666-6666")
+    if (intlTelInput.utils && intlTelInput.utils.numberFormat) {
+      var formatted = iti.getNumber(intlTelInput.utils.numberFormat.INTERNATIONAL);
+      if (formatted) return formatted;
+    }
+  } catch(e) {}
+  // Fallback: E.164 puro o value plano
+  return iti.getNumber() || (phoneEl ? phoneEl.value : '') || '—';
 }
 
 // ===== Cart CTA logic =====
@@ -965,37 +981,32 @@ function formatPlaca(input) {
 }
 
 // ===== Inicialización del componente intl-tel-input =====
-function initPhoneInput() {
+async function initPhoneInput() {
   var input = document.getElementById('coPhone');
-  if (!input || iti) return; // ya inicializado o input no presente
+  if (!input || iti) return;
+
+  // Cargar i18n español ANTES de instanciar (evita destroy + re-init)
+  var i18nEs = {};
+  try {
+    var i18nMod = await import('intl-tel-input/i18n');
+    if (i18nMod && i18nMod.es) i18nEs = i18nMod.es;
+  } catch(e) {
+    console.warn('Failed to load Spanish i18n module, UI strings will be in English', e);
+  }
+
   iti = intlTelInput(input, {
     initialCountry: 'pa',
     countryOrder: ['pa', 'co', 'cr', 'ec', 'es', 'us', 'mx', 'pe', 've'],
     separateDialCode: true,
     strictMode: true,
-    i18n: {}, // se sobreescribe abajo si la importación dinámica funciona
+    // countryNameLocale usa Intl.DisplayNames del browser para traducir nombres de países a español automáticamente
+    countryNameLocale: 'es',
+    // i18n traduce los UI strings (search placeholder, aria-labels, etc.)
+    i18n: i18nEs,
     loadUtils: function() { return import('intl-tel-input/utils'); }
   });
-  // Cargar i18n en español de forma asíncrona (no bloquea el init)
-  import('intl-tel-input/i18n/es').then(function(mod) {
-    // Re-init no es necesario; i18n se aplica al abrir dropdown la próxima vez
-    // Si la lib no aplica el cambio en runtime, recreamos:
-    if (mod && mod.default) {
-      var current = iti.getNumber();
-      var currentCountry = iti.getSelectedCountryData().iso2 || 'pa';
-      iti.destroy();
-      iti = intlTelInput(input, {
-        initialCountry: currentCountry,
-        countryOrder: ['pa', 'co', 'cr', 'ec', 'es', 'us', 'mx', 'pe', 've'],
-        separateDialCode: true,
-        strictMode: true,
-        i18n: mod.default,
-        loadUtils: function() { return import('intl-tel-input/utils'); }
-      });
-      if (current) iti.setNumber(current);
-      setupPhoneListeners(); // re-bindear listeners
-    }
-  }).catch(function() { /* fallback al inglés default si falla el import */ });
+
+  setupPhoneListeners();
 }
 
 // ===== Listeners on-blur / on-input para validación en tiempo real =====
