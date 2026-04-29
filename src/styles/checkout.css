@@ -434,3 +434,39 @@
   .pp-card-price { font-size: 17px; }
   .pp-card-desc { font-size: 12px; }
 }
+
+/* ===== intl-tel-input v28 — paths a sprites + tweaks de styling ===== */
+/* CRÍTICO: v25+ requiere apuntar manualmente a los sprites vía CSS variables.
+   En v28 usamos WebP (default de la lib, más liviano que PNG).
+   El globe ya no es asset — es SVG inline en el CSS de la lib. */
+.iti {
+  --iti-path-flags-1x: url('/images/flags.webp');
+  --iti-path-flags-2x: url('/images/flags@2x.webp');
+  width: 100%;
+}
+.iti__tel-input {
+  width: 100%;
+  padding: 12px 14px;
+  padding-left: 90px !important;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-900);
+  background: var(--white);
+  transition: border-color .2s;
+}
+.iti__tel-input:focus { outline: none; border-color: var(--blue); }
+.iti__tel-input.error { border-color: #EF4444; }
+.iti__country-list { font-family: 'Exo 2', sans-serif; font-size: 14px; }
+
+/* Helper text debajo de input (formato esperado, etc) */
+.co-field .field-help {
+  font-size: 10px;
+  color: var(--gray-500);
+  margin-top: 4px;
+  font-style: italic;
+  letter-spacing: .1px;
+}
+.co-field .field-help strong { font-weight: 700; color: var(--gray-700); }
