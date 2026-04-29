@@ -36,6 +36,21 @@ window.planNames = planNames;
 // ITBMS Panamá 7% (Ley 8 de 2010, Código Fiscal art. 1057-V)
 const ITBMS_RATE = 0.07;
 
+// ⚠️⚠️⚠️ DEVELOPMENT MOCK ONLY ⚠️⚠️⚠️
+// NUNCA poner códigos reales aquí. En producción esto vive en Odoo
+// y la validación se hace vía POST /api/validate-discount-code (Netlify Function)
+// que consulta Odoo. Cualquier código en este archivo es VISIBLE para cualquier
+// usuario que abra DevTools → cualquiera puede usarlo gratis.
+// Remover este mock cuando se integre Odoo.
+const MOCK_VALID_CODES = {
+  'SENZA10':   { type: 'percent', value: 0.10, label: '10% de descuento' },
+  'WELCOME5':  { type: 'fixed',   value: 5,    label: '$5 de descuento' },
+  'FAMILIA20': { type: 'percent', value: 0.20, label: '20% de descuento' }
+};
+
+let appliedCode = null; // {code, type, value, label}
+window.appliedCode = appliedCode;
+
 // ===== Step sequences & progress mapping =====
 function getStepSequence() {
   if (checkoutMode === 'personal') return [1, 2, 3, 4];
@@ -92,7 +107,12 @@ function guardarDatosCheckout() {
       phone: phoneEl ? phoneEl.value : ''
     },
     vehicles: collectVehicles(),
-    discountCode: null
+    discountCode: appliedCode ? {
+      code: appliedCode.code,
+      type: appliedCode.type,
+      value: appliedCode.value,
+      label: appliedCode.label
+    } : null
   };
   try { sessionStorage.setItem(SS_KEY, JSON.stringify(data)); } catch(e) {}
   return data;
@@ -284,12 +304,12 @@ function renderResumen() {
 
   // Breakdown with ITBMS
   var html = '';
-  var subtotal = 0;
+  var subtotalBruto = 0;
   if (carCount === 1) {
     html += '<div class="cart-plan-line">'
       + '<span class="label">Plan ' + planNames[selectedPlan].toLowerCase() + ' · 1 vehículo</span>'
       + '<span class="val">$' + p.full.toFixed(2) + '</span></div>';
-    subtotal = p.full;
+    subtotalBruto = p.full;
   } else {
     html += '<div class="cart-plan-line">'
       + '<span class="label">Auto 1 (precio base)</span>'
@@ -301,17 +321,39 @@ function renderResumen() {
     html += '<div class="cart-plan-line discount">'
       + '<span class="label">Ahorro vs. individual</span>'
       + '<span class="val">−$' + savings.toFixed(2) + '</span></div>';
-    subtotal = p.full + p.discounted * (carCount - 1);
+    subtotalBruto = p.full + p.discounted * (carCount - 1);
   }
-  var itbms = +(subtotal * ITBMS_RATE).toFixed(2);
-  var total = +(subtotal + itbms).toFixed(2);
+
+  // Aplicar código de descuento sobre subtotal bruto.
+  // ITBMS DGI Panamá: se calcula sobre el precio neto post-descuento (no permite cascada).
+  var discount = 0;
+  var discountLineHTML = '';
+  if (appliedCode) {
+    if (appliedCode.type === 'percent') {
+      discount = subtotalBruto * appliedCode.value;
+      discountLineHTML = '<div class="cart-plan-line discount-code">'
+        + '<span class="label">Código ' + escapeHtml(appliedCode.code)
+        + ' (−' + Math.round(appliedCode.value * 100) + '%)</span>'
+        + '<span class="val">−$' + discount.toFixed(2) + '</span></div>';
+    } else {
+      discount = Math.min(appliedCode.value, subtotalBruto);
+      discountLineHTML = '<div class="cart-plan-line discount-code">'
+        + '<span class="label">Código ' + escapeHtml(appliedCode.code)
+        + ' (−$' + appliedCode.value + ')</span>'
+        + '<span class="val">−$' + discount.toFixed(2) + '</span></div>';
+    }
+  }
+  var subtotalNeto = subtotalBruto - discount;
+  var itbms = +(subtotalNeto * ITBMS_RATE).toFixed(2);
+  var total = +(subtotalNeto + itbms).toFixed(2);
   selectedPrice = total;
   window.selectedPrice = selectedPrice;
 
   html += '<div class="cart-plan-divider"></div>';
   html += '<div class="cart-plan-line subtotal">'
     + '<span class="label">Subtotal</span>'
-    + '<span class="val">$' + subtotal.toFixed(2) + '</span></div>';
+    + '<span class="val">$' + subtotalBruto.toFixed(2) + '</span></div>';
+  html += discountLineHTML;
   html += '<div class="cart-plan-line tax">'
     + '<span class="label">ITBMS (7%)</span>'
     + '<span class="val">$' + itbms.toFixed(2) + '</span></div>';
@@ -321,6 +363,9 @@ function renderResumen() {
     + '<span class="val">$' + total.toFixed(2) + '<span>/mes</span></span></div>';
   html += '<div class="cart-plan-tax-note">Incluye ITBMS 7% según Ley fiscal de Panamá</div>';
   document.getElementById('cartBreakdown').innerHTML = html;
+
+  // Sincronizar el componente de promo con el estado actual
+  restorePromoUI();
 
   // Vehicles
   document.getElementById('cartVehiclesTitle').textContent = carCount === 1 ? 'Tu vehículo' : 'Tus ' + carCount + ' vehículos';
@@ -412,6 +457,8 @@ function openCheckout(btn, mode) {
 
   // Reset state — start fresh
   limpiarDatosCheckout();
+  appliedCode = null;
+  window.appliedCode = null;
   ['coName','coLastName','coEmail','coPhone'].forEach(function(id){
     var el = document.getElementById(id);
     if(el){ el.value=''; el.classList.remove('error'); }
@@ -607,6 +654,116 @@ function processPayment() {
   }
 }
 
+// ===== Promo code (discount) handlers =====
+// Validación actual: contra MOCK_VALID_CODES local (solo dev).
+// En producción esto debe llamar a /api/validate-discount-code (Netlify Function → Odoo).
+function togglePromoInput() {
+  var toggle = document.getElementById('promoToggle');
+  var wrap = document.getElementById('promoInputWrap');
+  var err = document.getElementById('promoError');
+  var input = document.getElementById('promoInput');
+  if (toggle) toggle.style.display = 'none';
+  if (wrap) { wrap.classList.add('active'); wrap.classList.remove('error'); }
+  if (err) err.classList.remove('active');
+  if (input) input.focus();
+}
+
+function cancelPromoInput() {
+  var toggle = document.getElementById('promoToggle');
+  var wrap = document.getElementById('promoInputWrap');
+  var err = document.getElementById('promoError');
+  var input = document.getElementById('promoInput');
+  var btn = document.getElementById('promoApply');
+  if (wrap) { wrap.classList.remove('active'); wrap.classList.remove('error'); }
+  if (err) err.classList.remove('active');
+  if (input) input.value = '';
+  if (btn) btn.disabled = true;
+  if (toggle) toggle.style.display = '';
+}
+
+function onPromoInputChange() {
+  var input = document.getElementById('promoInput');
+  var btn = document.getElementById('promoApply');
+  var wrap = document.getElementById('promoInputWrap');
+  var err = document.getElementById('promoError');
+  var val = input ? input.value.trim() : '';
+  if (btn) btn.disabled = val.length === 0;
+  if (wrap) wrap.classList.remove('error');
+  if (err) err.classList.remove('active');
+}
+
+function onPromoKeyPress(e) {
+  if (e.key === 'Enter') {
+    var btn = document.getElementById('promoApply');
+    if (btn && !btn.disabled) {
+      e.preventDefault();
+      applyPromoCode();
+    }
+  }
+}
+
+function applyPromoCode() {
+  var input = document.getElementById('promoInput');
+  if (!input) return;
+  var code = input.value.trim().toUpperCase();
+  if (!code) return;
+  var data = MOCK_VALID_CODES[code];
+  if (data) {
+    appliedCode = { code: code, type: data.type, value: data.value, label: data.label };
+    window.appliedCode = appliedCode;
+    guardarDatosCheckout();
+    renderResumen();
+  } else {
+    var wrap = document.getElementById('promoInputWrap');
+    var err = document.getElementById('promoError');
+    if (wrap) wrap.classList.add('error');
+    if (err) err.classList.add('active');
+  }
+}
+
+function removePromoCode() {
+  appliedCode = null;
+  window.appliedCode = null;
+  var input = document.getElementById('promoInput');
+  var btn = document.getElementById('promoApply');
+  if (input) input.value = '';
+  if (btn) btn.disabled = true;
+  guardarDatosCheckout();
+  renderResumen();
+}
+
+// Sincroniza el DOM del componente promo con el estado actual de appliedCode.
+function restorePromoUI() {
+  var toggle = document.getElementById('promoToggle');
+  var wrap = document.getElementById('promoInputWrap');
+  var err = document.getElementById('promoError');
+  var applied = document.getElementById('promoApplied');
+  var promo = document.querySelector('.cart-promo');
+  var input = document.getElementById('promoInput');
+  var btn = document.getElementById('promoApply');
+  if (!toggle || !wrap || !applied || !promo) return;
+
+  if (appliedCode) {
+    wrap.classList.remove('active');
+    wrap.classList.remove('error');
+    if (err) err.classList.remove('active');
+    applied.classList.add('active');
+    promo.classList.add('has-applied');
+    document.getElementById('promoAppliedCode').textContent = appliedCode.code;
+    document.getElementById('promoAppliedLabel').textContent = appliedCode.label;
+    toggle.style.display = 'none';
+  } else {
+    wrap.classList.remove('active');
+    wrap.classList.remove('error');
+    if (err) err.classList.remove('active');
+    applied.classList.remove('active');
+    promo.classList.remove('has-applied');
+    if (input) input.value = '';
+    if (btn) btn.disabled = true;
+    toggle.style.display = '';
+  }
+}
+
 // Expose globally
 window.openCheckout = openCheckout;
 window.closeCheckout = closeCheckout;
@@ -637,3 +794,10 @@ window.goToPayment = goToPayment;
 window.showResultSuccess = showResultSuccess;
 window.showResultFailure = showResultFailure;
 window.retryPayment = retryPayment;
+window.togglePromoInput = togglePromoInput;
+window.cancelPromoInput = cancelPromoInput;
+window.onPromoInputChange = onPromoInputChange;
+window.onPromoKeyPress = onPromoKeyPress;
+window.applyPromoCode = applyPromoCode;
+window.removePromoCode = removePromoCode;
+window.restorePromoUI = restorePromoUI;
