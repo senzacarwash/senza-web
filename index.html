@@ -1529,8 +1529,7 @@
             <div class="cart-block-icon orange">⚡</div>
             <span>Tu plan</span>
           </div>
-          <!-- TEMPORAL — Botón "Editar" del Plan removido. Pendiente: implementar overlay con plan picker
-               según decisión 29 Abr. Ver issue #25 en SENZA_PROJECT_BRIEF_v5.md sección de issues. -->
+          <a class="cart-edit" onclick="openPlanPicker()">Editar</a>
         </div>
         <div class="cart-plan-name" id="cartPlanName">SUPREME</div>
         <p class="cart-plan-detail" id="cartPlanDetail">Membresía Personal · Lavados ilimitados · Cancela cuando quieras</p>
@@ -1700,6 +1699,36 @@
       <button class="co-btn-secondary" onclick="closeCheckout()">Volver al inicio</button>
     </div>
   </div>
+</div>
+
+<!-- ============================================================ -->
+<!--           PLAN PICKER OVERLAY (Issue #25)                      -->
+<!-- ============================================================ -->
+<!-- IMPORTANTE: este overlay vive FUERA del .checkout-overlay      -->
+<!-- porque .checkout-overlay tiene transform: translateX(), lo que -->
+<!-- haría que un position:fixed adentro se relativice a él en vez  -->
+<!-- del viewport y rompería el centrado del modal.                 -->
+<div class="plan-picker-overlay" id="planPickerOverlay" role="dialog" aria-modal="true" aria-labelledby="planPickerTitle">
+  <div class="pp-modal">
+    <div class="pp-header">
+      <div>
+        <h2 id="planPickerTitle">Cambiar plan</h2>
+        <p class="pp-sub" id="planPickerSub">Cambia tu plan sin perder tus datos.</p>
+      </div>
+      <button type="button" class="pp-close" onclick="closePlanPicker()" aria-label="Cerrar">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M1 1L13 13M13 1L1 13"/>
+        </svg>
+      </button>
+    </div>
+    <div class="pp-list" id="planPickerList"></div>
+  </div>
+</div>
+
+<!-- Toast del plan picker -->
+<div class="plan-picker-toast" id="planPickerToast">
+  <span class="pp-toast-check">✓</span>
+  <span id="planPickerToastText"></span>
 </div>
 
 <!-- ===== FLOATING CHAT BUBBLE ===== -->
