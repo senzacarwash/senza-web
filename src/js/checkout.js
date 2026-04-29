@@ -1,17 +1,22 @@
 // ===== CHECKOUT FLOW =====
+// Pasos:
+//   0 = Multi calculator (solo si multi sin calc previa)
+//   1 = Datos personales
+//   2 = Vehículo(s)
+//   3 = Resumen / Cart (NUEVO)
+//   4 = Pago (iframe Billcentrix — mockup)
+//   5 = Resultado (éxito o fallo)
 let currentStep = 1;
 let selectedPlan = 'supreme';
 let selectedPrice = 34;
-let termsAccepted = false;
 let checkoutMode = 'personal'; // 'personal' or 'multi'
 let multiCarCount = 2;
-let multiCalcDone = false; // did user already use calculator on main page?
-let coCalcCount = 2; // checkout calculator count
+let multiCalcDone = false; // came from home calc → skip step 0
+let coCalcCount = 2;
 
 window.currentStep = currentStep;
 window.selectedPlan = selectedPlan;
 window.selectedPrice = selectedPrice;
-window.termsAccepted = termsAccepted;
 window.checkoutMode = checkoutMode;
 window.multiCarCount = multiCarCount;
 window.multiCalcDone = multiCalcDone;
@@ -28,18 +33,88 @@ window.planColors = planColors;
 window.planPrices = planPrices;
 window.planNames = planNames;
 
-// Step sequence: personal = [1,2,3,4(success)], multi-no-calc = [0,1,2,3,4], multi-with-calc = [1,2,3,4]
+// ITBMS Panamá 7% (Ley 8 de 2010, Código Fiscal art. 1057-V)
+const ITBMS_RATE = 0.07;
+
+// ===== Step sequences & progress mapping =====
 function getStepSequence() {
-  if (checkoutMode === 'personal') return [2,1,3];
-  if (multiCalcDone) return [2,1,3];
-  return [0,2,1,3];
+  if (checkoutMode === 'personal') return [1, 2, 3, 4];
+  if (multiCalcDone) return [1, 2, 3, 4];
+  return [0, 1, 2, 3, 4];
 }
+// Always 4 progress segments — independiente del flow.
 function getStepLabels() {
-  if (checkoutMode === 'personal') return ['Vehículo','Tus datos','Pago'];
-  if (multiCalcDone) return ['Vehículos','Tus datos','Pago'];
-  return ['Plan','Vehículos','Tus datos','Pago'];
+  return ['Plan', 'Datos', 'Resumen', 'Pago'];
+}
+// Map a panel-step (0..4) → progress segment index (0..3).
+function getStepSegment(step) {
+  if (step === 0) return 0;
+  if (step === 1 || step === 2) return 1;
+  if (step === 3) return 2;
+  if (step === 4) return 3;
+  return -1;
 }
 
+// ===== sessionStorage persistence =====
+const SS_KEY = 'senza_checkout_data';
+
+function collectVehicles() {
+  var count = checkoutMode === 'multi' ? multiCarCount : 1;
+  var vehicles = [];
+  for (var i = 0; i < count; i++) {
+    var placaEl = document.getElementById('coPlaca' + i);
+    var marcaEl = document.getElementById('coMarca' + i);
+    var modeloEl = document.getElementById('coModelo' + i);
+    var colorEl = document.getElementById('coColor' + i);
+    vehicles.push({
+      plate: placaEl ? placaEl.value.trim().toUpperCase() : '',
+      brand: marcaEl ? marcaEl.value.trim() : '',
+      model: modeloEl ? modeloEl.value.trim() : '',
+      color: colorEl ? colorEl.value.trim() : ''
+    });
+  }
+  return vehicles;
+}
+
+function guardarDatosCheckout() {
+  var nameEl = document.getElementById('coName');
+  var lastEl = document.getElementById('coLastName');
+  var emailEl = document.getElementById('coEmail');
+  var phoneEl = document.getElementById('coPhone');
+  var data = {
+    plan: selectedPlan,
+    mode: checkoutMode,
+    carCount: checkoutMode === 'multi' ? multiCarCount : 1,
+    customer: {
+      firstName: nameEl ? nameEl.value : '',
+      lastName: lastEl ? lastEl.value : '',
+      email: emailEl ? emailEl.value : '',
+      phone: phoneEl ? phoneEl.value : ''
+    },
+    vehicles: collectVehicles(),
+    discountCode: null
+  };
+  try { sessionStorage.setItem(SS_KEY, JSON.stringify(data)); } catch(e) {}
+  return data;
+}
+
+function cargarDatosCheckout() {
+  try {
+    var raw = sessionStorage.getItem(SS_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function limpiarDatosCheckout() {
+  try { sessionStorage.removeItem(SS_KEY); } catch(e) {}
+}
+
+window.guardarDatosCheckout = guardarDatosCheckout;
+window.cargarDatosCheckout = cargarDatosCheckout;
+window.limpiarDatosCheckout = limpiarDatosCheckout;
+
+// ===== Vehicle form rendering =====
 function buildVehicleForm(index, total) {
   var isFirst = index === 0;
   var numClass = isFirst ? 'first' : 'additional';
@@ -71,10 +146,8 @@ function updateSummaryPlacas() {
   if (checkoutMode !== 'multi') return;
   var p = window.plans[selectedPlan];
   var vhtml = '';
-  var total = 0;
   for (var i = 0; i < multiCarCount; i++) {
     var price = i === 0 ? p.full : p.discounted;
-    total += price;
     var placaEl = document.getElementById('coPlaca' + i);
     var marcaEl = document.getElementById('coMarca' + i);
     var placa = placaEl ? placaEl.value.trim().toUpperCase() : '';
@@ -97,7 +170,6 @@ function updateSummary() {
     document.getElementById('coSummaryDetail').style.display = '';
     document.getElementById('coSummaryVehicles').style.display = 'none';
     document.getElementById('coSummaryTotalRow').style.display = 'none';
-    document.getElementById('coTermsPrice').innerHTML = '$' + p.full + '/mes <span class="wr-tax-inline">+ ITBMS</span>';
     selectedPrice = p.full;
   } else {
     document.getElementById('coSummaryPrice').innerHTML = '';
@@ -107,7 +179,6 @@ function updateSummary() {
     var total = p.full + (multiCarCount - 1) * p.discounted;
     document.getElementById('coSummaryTotal').innerHTML = '$' + total + ' <span class="wr-tax-inline">+ ITBMS</span>';
     document.getElementById('coSummaryTotalRow').style.display = '';
-    document.getElementById('coTermsPrice').innerHTML = '$' + total + '/mes <span class="wr-tax-inline">+ ITBMS</span>';
     selectedPrice = total;
   }
 }
@@ -151,52 +222,183 @@ function confirmCoCalc() {
 
 // === Progress bar rendering ===
 function renderProgress() {
-  var seq = getStepSequence();
   var labels = getStepLabels();
   var progHtml = '';
   var labelsHtml = '';
-  for (var i = 0; i < seq.length; i++) {
-    var stepNum = seq[i];
-    var displayNum = i + 1;
+  for (var i = 0; i < labels.length; i++) {
     if (i === 0) {
-      progHtml += '<div class="co-step" data-step="' + stepNum + '"><div class="co-step-dot">' + displayNum + '</div></div>';
+      progHtml += '<div class="co-step" data-seg="' + i + '"><div class="co-step-dot">' + (i+1) + '</div></div>';
     } else {
-      progHtml += '<div class="co-step" data-step="' + stepNum + '"><div class="co-step-line"></div><div class="co-step-dot">' + displayNum + '</div></div>';
+      progHtml += '<div class="co-step" data-seg="' + i + '"><div class="co-step-line"></div><div class="co-step-dot">' + (i+1) + '</div></div>';
     }
-    labelsHtml += '<div class="co-step-label" data-forstep="' + stepNum + '">' + labels[i] + '</div>';
+    labelsHtml += '<div class="co-step-label" data-seg="' + i + '">' + labels[i] + '</div>';
   }
   document.getElementById('coProgress').innerHTML = progHtml;
   document.getElementById('coLabels').innerHTML = labelsHtml;
-  // Adjust label widths
   var labelEls = document.getElementById('coLabels').children;
   var w = Math.floor(100 / labels.length);
   for (var j = 0; j < labelEls.length; j++) labelEls[j].style.width = w + '%';
 }
 
 function updateProgressUI() {
-  var seq = getStepSequence();
+  var currentSeg = getStepSegment(currentStep);
+  // "Plan" segment is already done if user pre-chose plan from card or via home calc
+  var planAlreadyDone = checkoutMode === 'personal' || multiCalcDone;
   document.querySelectorAll('#coProgress .co-step').forEach(function(s) {
-    var n = parseInt(s.dataset.step);
-    var idx = seq.indexOf(n);
-    var curIdx = seq.indexOf(currentStep);
+    var seg = parseInt(s.dataset.seg);
     s.classList.remove('active','done');
-    if (idx === curIdx) s.classList.add('active');
-    else if (idx < curIdx) s.classList.add('done');
+    if (seg === currentSeg) s.classList.add('active');
+    else if (seg < currentSeg) s.classList.add('done');
+    else if (seg === 0 && planAlreadyDone) s.classList.add('done');
   });
   document.querySelectorAll('#coLabels .co-step-label').forEach(function(l) {
-    var n = parseInt(l.dataset.forstep);
-    var idx = seq.indexOf(n);
-    var curIdx = seq.indexOf(currentStep);
+    var seg = parseInt(l.dataset.seg);
     l.classList.remove('active','done');
-    if (idx === curIdx) l.classList.add('active');
-    else if (idx < curIdx) l.classList.add('done');
+    if (seg === currentSeg) l.classList.add('active');
+    else if (seg < currentSeg) l.classList.add('done');
+    else if (seg === 0 && planAlreadyDone) l.classList.add('done');
   });
 }
 
+// ===== Resumen / Cart rendering =====
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(c){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+
+function renderResumen() {
+  var p = window.plans[selectedPlan];
+  var carCount = checkoutMode === 'multi' ? multiCarCount : 1;
+
+  // Plan name + color class
+  var planNameEl = document.getElementById('cartPlanName');
+  planNameEl.textContent = planNames[selectedPlan].toUpperCase();
+  planNameEl.className = 'cart-plan-name ' + selectedPlan;
+
+  // Plan detail line
+  var detailEl = document.getElementById('cartPlanDetail');
+  detailEl.textContent = carCount === 1
+    ? 'Membresía Personal · Lavados ilimitados · Cancela cuando quieras'
+    : 'Membresía Multi-Vehículo (' + carCount + ' autos) · Lavados ilimitados · Cancela cuando quieras';
+
+  // Breakdown with ITBMS
+  var html = '';
+  var subtotal = 0;
+  if (carCount === 1) {
+    html += '<div class="cart-plan-line">'
+      + '<span class="label">Plan ' + planNames[selectedPlan].toLowerCase() + ' · 1 vehículo</span>'
+      + '<span class="val">$' + p.full.toFixed(2) + '</span></div>';
+    subtotal = p.full;
+  } else {
+    html += '<div class="cart-plan-line">'
+      + '<span class="label">Auto 1 (precio base)</span>'
+      + '<span class="val">$' + p.full.toFixed(2) + '</span></div>';
+    html += '<div class="cart-plan-line">'
+      + '<span class="label">Auto 2 al ' + carCount + ' (c/u)</span>'
+      + '<span class="val">$' + p.discounted.toFixed(2) + '</span></div>';
+    var savings = (p.full - p.discounted) * (carCount - 1);
+    html += '<div class="cart-plan-line discount">'
+      + '<span class="label">Ahorro vs. individual</span>'
+      + '<span class="val">−$' + savings.toFixed(2) + '</span></div>';
+    subtotal = p.full + p.discounted * (carCount - 1);
+  }
+  var itbms = +(subtotal * ITBMS_RATE).toFixed(2);
+  var total = +(subtotal + itbms).toFixed(2);
+  selectedPrice = total;
+  window.selectedPrice = selectedPrice;
+
+  html += '<div class="cart-plan-divider"></div>';
+  html += '<div class="cart-plan-line subtotal">'
+    + '<span class="label">Subtotal</span>'
+    + '<span class="val">$' + subtotal.toFixed(2) + '</span></div>';
+  html += '<div class="cart-plan-line tax">'
+    + '<span class="label">ITBMS (7%)</span>'
+    + '<span class="val">$' + itbms.toFixed(2) + '</span></div>';
+  html += '<div class="cart-plan-divider"></div>';
+  html += '<div class="cart-plan-total">'
+    + '<span class="label">Total mensual</span>'
+    + '<span class="val">$' + total.toFixed(2) + '<span>/mes</span></span></div>';
+  html += '<div class="cart-plan-tax-note">Incluye ITBMS 7% según Ley fiscal de Panamá</div>';
+  document.getElementById('cartBreakdown').innerHTML = html;
+
+  // Vehicles
+  document.getElementById('cartVehiclesTitle').textContent = carCount === 1 ? 'Tu vehículo' : 'Tus ' + carCount + ' vehículos';
+  var vehicles = collectVehicles();
+  var vhtml = '';
+  for (var i = 0; i < vehicles.length; i++) {
+    var v = vehicles[i];
+    var name = (v.brand + ' ' + v.model).trim() || ('Vehículo ' + (i+1));
+    var color = v.color || '—';
+    var plate = v.plate || '—';
+    vhtml += '<div class="cart-vehicle">'
+      + '<div class="cart-vehicle-plate">' + escapeHtml(plate) + '</div>'
+      + '<div class="cart-vehicle-info">'
+      + '<div class="cart-vehicle-name">' + escapeHtml(name) + '</div>'
+      + '<div class="cart-vehicle-color">' + escapeHtml(color) + '</div>'
+      + '</div></div>';
+  }
+  document.getElementById('cartVehicles').innerHTML = vhtml;
+
+  // Customer
+  var nameEl = document.getElementById('coName');
+  var lastEl = document.getElementById('coLastName');
+  var emailEl = document.getElementById('coEmail');
+  var phoneEl = document.getElementById('coPhone');
+  var fullName = ((nameEl ? nameEl.value : '') + ' ' + (lastEl ? lastEl.value : '')).trim();
+  document.getElementById('cartCustomerName').textContent = fullName || '—';
+  document.getElementById('cartCustomerEmail').textContent = (emailEl ? emailEl.value : '') || '—';
+  document.getElementById('cartCustomerPhone').textContent = (phoneEl ? phoneEl.value : '') || '—';
+}
+
+// ===== Cart CTA logic =====
+function updateCartCTA() {
+  var chk = document.getElementById('chkTerms');
+  var btn = document.getElementById('btnContinueToPayment');
+  var tooltip = document.getElementById('cartCtaTooltip');
+  var checked = !!(chk && chk.checked);
+  if (btn) btn.disabled = !checked;
+  if (tooltip) {
+    if (checked) tooltip.classList.remove('show');
+    else tooltip.classList.add('show');
+  }
+}
+
+// ===== Edit handlers from Resumen blocks =====
+function editPlan() {
+  if (checkoutMode === 'multi') {
+    // Permitir cambiar plan/cantidad — re-abrir step 0 (calc)
+    multiCalcDone = false;
+    coCalcCount = multiCarCount;
+    var calcCount = document.getElementById('coCalcCount');
+    var calcPlan = document.getElementById('coCalcPlan');
+    if (calcCount) calcCount.textContent = multiCarCount;
+    if (calcPlan) calcPlan.value = selectedPlan;
+    updateCoCalc();
+    renderProgress();
+    goToStep(0);
+  } else {
+    // Personal: el plan se elige desde la home; cerrar para que el cliente elija
+    closeCheckout();
+  }
+}
+
+function editVehicles() { goToStep(2); }
+function editCustomer() { goToStep(1); }
+
+// ===== Transition: Resumen → Pago =====
+function goToPayment() {
+  var chk = document.getElementById('chkTerms');
+  if (!chk || !chk.checked) return;
+  guardarDatosCheckout();
+  goToStep(4);
+}
+
+// ===== Open / close =====
 function openCheckout(btn, mode) {
   if (mode === 'multi') {
     checkoutMode = 'multi';
-    multiCalcDone = true; // came from calculator
+    multiCalcDone = true;
     selectedPlan = window.selectedCalcPlan || 'supreme';
     multiCarCount = window.carCount;
   } else {
@@ -213,7 +415,7 @@ function openCheckout(btn, mode) {
     }
   }
 
-  // Set checkout calc defaults
+  // Multi sin calc previa: setear defaults del calc
   if (checkoutMode === 'multi' && !multiCalcDone) {
     coCalcCount = 2;
     document.getElementById('coCalcCount').textContent = '2';
@@ -225,22 +427,40 @@ function openCheckout(btn, mode) {
   renderVehicleForms();
   renderProgress();
 
-  var seq = getStepSequence();
-  currentStep = seq[0]; // start at first step in sequence
-  termsAccepted = false;
-  document.getElementById('coCheck').classList.remove('checked');
-  document.getElementById('coCheck').innerHTML = '';
-  document.getElementById('coPayBtn').disabled = true;
-  ['coName','coLastName','coEmail','coPhone','coCardNum','coCardName','coCardExp','coCardCvv'].forEach(function(id){
+  // Reset state — start fresh
+  limpiarDatosCheckout();
+  ['coName','coLastName','coEmail','coPhone'].forEach(function(id){
     var el = document.getElementById(id);
-    if(el){el.value='';el.classList.remove('error');}
+    if(el){ el.value=''; el.classList.remove('error'); }
   });
+  var chkT = document.getElementById('chkTerms');
+  var chkH = document.getElementById('chkHolder');
+  var bcDemo = document.getElementById('bcDemoFailure');
+  if (chkT) chkT.checked = false;
+  if (chkH) chkH.checked = false;
+  if (bcDemo) bcDemo.checked = false;
+
+  // Reset BC mockup card preview
   var bcCard = document.getElementById('bcCardPreview');
   var bcName = document.getElementById('bcNamePreview');
   var bcExp = document.getElementById('bcExpPreview');
-  if(bcCard) bcCard.textContent = '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022';
+  if(bcCard) bcCard.textContent = '•••• •••• •••• ••••';
   if(bcName) bcName.textContent = 'NOMBRE';
   if(bcExp) bcExp.textContent = 'MM/AA';
+  ['coCardNum','coCardName','coCardExp','coCardCvv'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.value=''; el.classList.remove('error'); }
+  });
+
+  // Result panel: default to success state hidden
+  var rs = document.getElementById('resultSuccess');
+  var rf = document.getElementById('resultFailure');
+  if (rs) rs.style.display = '';
+  if (rf) rf.style.display = 'none';
+
+  // Set initial step
+  var seq = getStepSequence();
+  currentStep = seq[0];
   updateStepUI();
 
   document.getElementById('checkoutOverlay').classList.add('active');
@@ -252,17 +472,24 @@ function closeCheckout() {
   document.body.style.overflow = '';
 }
 
+// Top-right ✕ button: navigate back through sequence; if at first step, close.
 function checkoutBack() {
   var seq = getStepSequence();
   var curIdx = seq.indexOf(currentStep);
-  if (curIdx > 0) { currentStep = seq[curIdx - 1]; updateStepUI(); document.getElementById('checkoutOverlay').scrollTop = 0; }
-  else closeCheckout();
+  if (curIdx > 0) {
+    currentStep = seq[curIdx - 1];
+    updateStepUI();
+    document.getElementById('checkoutOverlay').scrollTop = 0;
+  } else {
+    closeCheckout();
+  }
 }
 
 function goToNextStep() {
   var seq = getStepSequence();
   var curIdx = seq.indexOf(currentStep);
   if (!validateStep(currentStep)) return;
+  guardarDatosCheckout();
   if (curIdx < seq.length - 1) {
     currentStep = seq[curIdx + 1];
     updateStepUI();
@@ -287,20 +514,48 @@ function goToStep(step) {
 }
 
 function updateStepUI() {
-  [0,1,2,3,4].forEach(function(i) {
+  [0,1,2,3,4,5].forEach(function(i) {
     var panel = document.getElementById('step' + i);
     if (panel) panel.classList.toggle('active', i === currentStep);
   });
   updateProgressUI();
-  var isSuccess = currentStep === 4;
-  var hideTopSummary = isSuccess || (checkoutMode === 'multi' && currentStep === 0);
+
+  var isResult = currentStep === 5;
+  var isResumen = currentStep === 3;
+  var isPayment = currentStep === 4;
+  var hideTopSummary = isResult || isResumen || (checkoutMode === 'multi' && currentStep === 0);
+
   document.getElementById('coSummary').style.display = hideTopSummary ? 'none' : '';
-  document.getElementById('coProgress').style.display = isSuccess ? 'none' : '';
-  document.getElementById('coLabels').style.display = isSuccess ? 'none' : '';
-  document.getElementById('coTitle').textContent = isSuccess ? '\u00a1Listo!' : 'Suscripción';
-  document.getElementById('coSubtitle').textContent = isSuccess ? 'Tu membresía está activa' : 'Completa tus datos para activar tu membresía';
-  document.getElementById('coBackBtn').style.display = isSuccess ? 'none' : '';
-  if (checkoutMode === 'multi' && currentStep !== 0 && !isSuccess) {
+  document.getElementById('coProgress').style.display = isResult ? 'none' : '';
+  document.getElementById('coLabels').style.display = isResult ? 'none' : '';
+
+  // Title / subtitle per step
+  var titleEl = document.getElementById('coTitle');
+  var subEl = document.getElementById('coSubtitle');
+  if (isResult) {
+    titleEl.textContent = '¡Listo!';
+    subEl.textContent = '';
+  } else if (isResumen) {
+    titleEl.textContent = 'Resumen del pedido';
+    subEl.textContent = 'Revisa tu información antes de continuar al pago';
+  } else if (isPayment) {
+    titleEl.textContent = 'Pago seguro';
+    subEl.textContent = 'Procesado por Billcentrix';
+  } else {
+    titleEl.textContent = 'Suscripción';
+    subEl.textContent = 'Completa tus datos para activar tu membresía';
+  }
+
+  document.getElementById('coBackBtn').style.display = isResult ? 'none' : '';
+
+  // Render Resumen content when entering it
+  if (isResumen) {
+    renderResumen();
+    updateCartCTA();
+  }
+
+  // Top summary vehicles list (only relevant for multi, not on hidden states)
+  if (checkoutMode === 'multi' && !hideTopSummary) {
     var p = window.plans[selectedPlan];
     var vhtml = '';
     for (var i = 0; i < multiCarCount; i++) {
@@ -310,7 +565,6 @@ function updateStepUI() {
     }
     document.getElementById('coSummaryVehicles').innerHTML = vhtml;
     document.getElementById('coSummaryVehicles').style.display = '';
-    document.getElementById('coSummaryPlan').style.display = '';
   }
 }
 
@@ -322,14 +576,8 @@ function validateStep(step) {
     if (!el.value.trim()) { el.classList.add('error'); valid = false; }
     else { el.classList.remove('error'); }
   }
-  function checkSelect(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    if (!el.value) { el.style.borderColor = '#EF4444'; valid = false; }
-    else { el.style.borderColor = ''; }
-  }
   if (step === 0) {
-    // Calc step — always valid (has defaults)
+    // Calc step — defaults are valid
   } else if (step === 1) {
     check('coName'); check('coLastName'); check('coEmail'); check('coPhone');
   } else if (step === 2) {
@@ -338,50 +586,42 @@ function validateStep(step) {
       check('coPlaca' + i);
       check('coMarca' + i);
     }
-  } else if (step === 3) {
-    check('coCardNum'); check('coCardName'); check('coCardExp'); check('coCardCvv');
-    if (!termsAccepted) { valid = false; document.getElementById('coTerms').style.boxShadow = '0 0 0 2px #EF4444'; }
   }
   return valid;
 }
 
-function toggleTerms() {
-  termsAccepted = !termsAccepted;
-  document.getElementById('coCheck').classList.toggle('checked', termsAccepted);
-  document.getElementById('coCheck').innerHTML = termsAccepted ? '\u2713' : '';
-  document.getElementById('coPayBtn').disabled = !termsAccepted;
-  document.getElementById('coTerms').style.boxShadow = '';
+// ===== Result screen =====
+function showResultSuccess() {
+  document.getElementById('resultSuccess').style.display = '';
+  document.getElementById('resultFailure').style.display = 'none';
+  var emailEl = document.getElementById('coEmail');
+  var email = emailEl && emailEl.value ? emailEl.value : 'tu correo';
+  document.getElementById('successEmailDisplay').textContent = email;
+  goToStep(5);
 }
 
+function showResultFailure() {
+  document.getElementById('resultSuccess').style.display = 'none';
+  document.getElementById('resultFailure').style.display = '';
+  goToStep(5);
+}
+
+function retryPayment() {
+  // Datos de plan/vehículos/cliente persistidos en sessionStorage; DOM también preservado
+  goToStep(4);
+}
+
+// ===== Process payment =====
+// TEMPORAL: usa el toggle bcDemoFailure para simular éxito o fallo.
+// Cuando se integre BC real, este flujo lo dispara el webhook → Netlify Function.
 function processPayment() {
-  if (!validateStep(3)) return;
-  document.getElementById('successPlan').textContent = planNames[selectedPlan] + (checkoutMode === 'multi' ? ' \u00b7 Multi-Vehículo' : '');
-  document.getElementById('successName').textContent = document.getElementById('coName').value + ' ' + document.getElementById('coLastName').value;
-
-  if (checkoutMode === 'personal') {
-    document.getElementById('successSingleCar').style.display = '';
-    document.getElementById('successMultiCars').style.display = 'none';
-    var marca = document.getElementById('coMarca0').value;
-    var modelo = document.getElementById('coModelo0').value;
-    document.getElementById('successCar').textContent = marca + (modelo ? ' ' + modelo : '');
-    document.getElementById('successPlaca').textContent = document.getElementById('coPlaca0').value.toUpperCase();
+  var demo = document.getElementById('bcDemoFailure');
+  guardarDatosCheckout();
+  if (demo && demo.checked) {
+    showResultFailure();
   } else {
-    document.getElementById('successSingleCar').style.display = 'none';
-    document.getElementById('successMultiCars').style.display = '';
-    var carsHtml = '';
-    for (var i = 0; i < multiCarCount; i++) {
-      var m = document.getElementById('coMarca' + i).value;
-      var mod = document.getElementById('coModelo' + i).value;
-      var pl = document.getElementById('coPlaca' + i).value.toUpperCase();
-      carsHtml += '<div class="co-success-car-row"><span class="scr-label">' + pl + '</span><span class="scr-value">' + m + (mod ? ' ' + mod : '') + '</span></div>';
-    }
-    document.getElementById('successMultiCars').innerHTML = carsHtml;
+    showResultSuccess();
   }
-
-  document.getElementById('successPrice').innerHTML = '$' + selectedPrice + '/mes <span class="wr-tax-inline">+ ITBMS</span>';
-  currentStep = 4;
-  updateStepUI();
-  document.getElementById('checkoutOverlay').scrollTop = 0;
 }
 
 // Expose globally
@@ -393,10 +633,10 @@ window.goToPrevStep = goToPrevStep;
 window.goToStep = goToStep;
 window.updateStepUI = updateStepUI;
 window.validateStep = validateStep;
-window.toggleTerms = toggleTerms;
 window.processPayment = processPayment;
 window.getStepSequence = getStepSequence;
 window.getStepLabels = getStepLabels;
+window.getStepSegment = getStepSegment;
 window.buildVehicleForm = buildVehicleForm;
 window.renderVehicleForms = renderVehicleForms;
 window.updateSummaryPlacas = updateSummaryPlacas;
@@ -406,3 +646,12 @@ window.coCalcAdjust = coCalcAdjust;
 window.confirmCoCalc = confirmCoCalc;
 window.renderProgress = renderProgress;
 window.updateProgressUI = updateProgressUI;
+window.renderResumen = renderResumen;
+window.updateCartCTA = updateCartCTA;
+window.editPlan = editPlan;
+window.editVehicles = editVehicles;
+window.editCustomer = editCustomer;
+window.goToPayment = goToPayment;
+window.showResultSuccess = showResultSuccess;
+window.showResultFailure = showResultFailure;
+window.retryPayment = retryPayment;
