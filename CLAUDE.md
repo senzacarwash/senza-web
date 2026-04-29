@@ -7,9 +7,10 @@ Senza Car Wash — sitio web SPA (Single Page Application) para un car wash de t
 - **Framework:** Vite (vanilla JS, sin React ni frameworks)
 - **Hosting:** Netlify (auto-deploy desde rama `main`)
 - **Repo:** github.com/senzacarwash/senza-web
-- **Pasarela de pagos:** Billcentrix (pendiente integración real)
-- **ERP:** Odoo (pendiente)
-- **Wallet passes:** PassKit (pendiente)
+- **Pasarela de pagos:** Billcentrix (iframe con URL encriptada para primer pago, Odoo gestiona recurrentes)
+- **ERP:** Odoo (implementador: Javier Sánchez — schema final esperado 30 Abr 2026)
+- **Wallet passes:** PassKit (vía Odoo)
+- **Serverless:** Netlify Functions (BC webhook + Odoo proxy — pendientes desarrollo)
 
 ## Estructura del proyecto
 ```
@@ -37,11 +38,14 @@ src/
     tabs.js             → switchTab
     plans.js            → toggleCard, FAQ
     multi.js            → Precios multi, calculadora
-    checkout.js         → Checkout flow (4 pasos)
+    checkout.js         → Checkout flow (4 pasos — en rediseño)
     chatbot.js          → Chat del home + FAB
     member.js           → Mi Membresía, overlays, cancelación
     support.js          → Chat de soporte en Mi Membresía
     init.js             → DOMContentLoaded, event listeners
+netlify/functions/      → 🆕 Serverless (a implementar)
+  billcentrix-webhook.js → Recibe notificación de BC, reenvía paquete a Odoo
+  odoo-proxy.js          → Proxy para inbound requests desde la web hacia Odoo
 ```
 
 ## Regla crítica: window exports
@@ -112,3 +116,82 @@ Todas las funciones que se llaman desde `onclick` en el HTML DEBEN estar en `win
 - Overlays cierran con ✕ (no ←)
 - Nav: link activo dimmed y no clickeable
 - Logo SENZA clickeable → regresa al home
+
+---
+
+## 🎯 FLUJO DE SIGNUP — DEFINITIVO (post 28 + 29 Abr 2026)
+
+El checkout de membresía sigue este flujo de 4 pasos en la web + paso externo (iframe BC):
+
+### PASO 1 · Datos del cliente y vehículo(s)
+- Campos: nombre, apellido, email, teléfono
+- Plan ya seleccionado (heredado del card de Plans)
+- Vehículo(s): placa, marca, modelo, color (NO pedir año — decisión de negocio)
+- Persistencia: **sessionStorage** (`senza_checkout_data`)
+- NO pedir contraseña aquí (deprecated 17 Abr)
+
+### PASO 2 · Resumen / Carrito (estilo Stripe) 🆕
+- Resumen visual organizado en bloques:
+  - Plan seleccionado + precio mensual total (multi-vehículo si aplica)
+  - Datos del/los auto(s)
+  - Datos del cliente
+- Botón "Editar" en cada bloque (regresa al paso 1 con sus datos preservados)
+- **Checkbox 1 — OBLIGATORIO:** Acepto Términos y Condiciones + autorizo cobro recurrente mensual
+- **Checkbox 2 — OPCIONAL (default desmarcado):** Soy el titular de la tarjeta
+  - Si marcado → datos del cliente van en payload encriptado a BC para autocompletar iframe
+  - Si NO marcado → iframe BC aparece vacío
+- Botón "Continuar al pago" deshabilitado hasta que checkbox 1 esté marcado
+
+### PASO 3 · Iframe Billcentrix
+- URL encriptada construida según ejemplo Python de Marwin (ETA ~lunes 4 May 2026)
+- Form BC tiene 2 sub-pasos internos (datos titular → tarjeta) — recomendación Marwin
+- Cliente paga (tokenización + cobro simultáneo en primer pago)
+- Cliente NUNCA edita datos de plan/auto en el iframe BC
+
+### PASO 4 · Confirmación / "Revisa tu email"
+- BC notifica resultado a `/api/billcentrix-webhook` (Netlify Function)
+- Web envía paquete consolidado a Odoo: `{cliente, autos, plan, status_bc, token}`
+- Si status BC = éxito:
+  - Odoo crea cliente + activa membresía
+  - Odoo envía email con wallet pass + link "crear contraseña"
+  - Web muestra: "Revisa tu email para activar tu cuenta"
+- Si status BC = fallo:
+  - Odoo guarda en BD paralela (carritos abandonados — NO crea cliente)
+  - Web muestra mensaje de error + botón "Intentar de nuevo"
+  - Datos en sessionStorage se conservan para reintento
+
+### Páginas adicionales (nuevas, fuera del checkout)
+- **Crear contraseña** — Landing con token desde email de bienvenida
+- **Olvidé mi contraseña** — Link desde el login
+
+---
+
+## ARQUITECTURA DE PAGOS (post reunión Billcentrix 28 Abr 2026)
+
+### Primer pago (web orquesta)
+1. Web genera URL encriptada con payload (datos cliente para autocompletar iframe BC)
+2. Cliente paga en iframe BC
+3. BC notifica resultado vía POST a la Netlify Function `/api/billcentrix-webhook`
+4. La Function envía paquete consolidado a Odoo
+5. Odoo decide qué hacer (crear cliente o guardar en BD de carritos abandonados)
+
+### Cobros recurrentes (Odoo orquesta — la web NO participa)
+- Odoo invoca BC directamente
+- Si falla, BC maneja retries automáticos
+- BC consulta a Odoo si la factura sigue pendiente antes de reintentar (anti-doble-cobro)
+
+### Reglas de seguridad/privacidad
+- La web NUNCA maneja datos de tarjeta — solo pasa por el iframe BC
+- La web NO almacena tokens de pago — los maneja Odoo
+- Datos del cliente (nombre, email, teléfono) sí pueden ir en payload encriptado a BC
+
+---
+
+## ⚠️ APRENDIZAJES CRÍTICOS (no romper)
+
+- **NUNCA descargar HTML desde Netlify para reeditar** — Cloudflare inyecta scripts que rompen el JS. Trabajar siempre desde GitHub.
+- **Verificar `git push`** después del commit — Claude Code a veces commit pero no push. Confirmar con `git push origin <branch>`.
+- **Imágenes en `public/images/` deben commitearse** — si solo están localmente, Netlify no las despliega (404).
+- **PSD sin Adobe:** usar Photopea.com, exportar WebP al 80-85%.
+- **CSV preferido sobre XLSX** para uploads a proyectos Claude (merged cells de XLSX rompen parsing).
+- **Inline `style="display:none"` sobreescribe CSS** — usar `!important` en media queries o controlar visibilidad solo desde CSS.
