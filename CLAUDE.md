@@ -195,3 +195,5 @@ El checkout de membresía sigue este flujo de 4 pasos en la web + paso externo (
 - **PSD sin Adobe:** usar Photopea.com, exportar WebP al 80-85%.
 - **CSV preferido sobre XLSX** para uploads a proyectos Claude (merged cells de XLSX rompen parsing).
 - **Inline `style="display:none"` sobreescribe CSS** — usar `!important` en media queries o controlar visibilidad solo desde CSS.
+- **Anti-patrón: `transform` en padre rompe `position: fixed` en hijos.** Cualquier elemento con `position: fixed` dentro de un padre con `transform` (ej. `.checkout-overlay` que tiene `transform: translateX()` para deslizar) se relativiza al padre, no al viewport. **Para overlays nuevos en el checkout (plan picker, futuros modales):** alojarlos al mismo nivel del DOM que `.checkout-overlay`, NO adentro. Usar z-index 1000+ para superponer al checkout (que es z-index 200). Documentado en sesión 30 Abr al integrar plan picker overlay (PR #15).
+- **Validar previews de Netlify con hard refresh + browser incógnito.** Cache del browser engaña: un preview ya regenerado puede verse viejo. Protocolo obligatorio antes de reportar "no se ve el cambio": `Cmd+Shift+R` y/o ventana incógnito.
