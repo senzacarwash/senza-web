@@ -1565,6 +1565,28 @@
         <div id="cartVehicles"></div>
       </div>
 
+      <!-- Código de descuento -->
+      <div class="cart-promo">
+        <div class="cart-promo-toggle" id="promoToggle" onclick="togglePromoInput()">
+          <span class="cart-promo-toggle-icon">+</span>
+          <span>¿Tienes un código de descuento?</span>
+        </div>
+        <div class="cart-promo-input-wrap" id="promoInputWrap">
+          <input type="text" id="promoInput" placeholder="Ingresa tu código" autocomplete="off" oninput="onPromoInputChange()" onkeypress="onPromoKeyPress(event)">
+          <button class="cart-promo-apply" id="promoApply" onclick="applyPromoCode()" disabled>Aplicar</button>
+          <button class="cart-promo-cancel" onclick="cancelPromoInput()" title="Cerrar">✕</button>
+        </div>
+        <div class="cart-promo-error" id="promoError">Código no válido o expirado</div>
+        <div class="cart-promo-applied" id="promoApplied">
+          <span class="cart-promo-check">✓</span>
+          <div class="cart-promo-applied-text">
+            Código <strong id="promoAppliedCode"></strong> aplicado
+            <span id="promoAppliedLabel" class="cart-promo-applied-label"></span>
+          </div>
+          <span class="cart-promo-remove" onclick="removePromoCode()" title="Quitar código">✕</span>
+        </div>
+      </div>
+
       <!-- Consents -->
       <div class="cart-consents">
         <label class="cart-checkbox required">
