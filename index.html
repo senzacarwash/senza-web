@@ -1529,23 +1529,12 @@
             <div class="cart-block-icon orange">⚡</div>
             <span>Tu plan</span>
           </div>
-          <a class="cart-edit" id="cartEditPlan" onclick="editPlan()">Editar</a>
+          <!-- TEMPORAL — Botón "Editar" del Plan removido. Pendiente: implementar overlay con plan picker
+               según decisión 29 Abr. Ver issue #25 en SENZA_PROJECT_BRIEF_v5.md sección de issues. -->
         </div>
         <div class="cart-plan-name" id="cartPlanName">SUPREME</div>
         <p class="cart-plan-detail" id="cartPlanDetail">Membresía Personal · Lavados ilimitados · Cancela cuando quieras</p>
         <div class="cart-plan-breakdown" id="cartBreakdown"></div>
-      </div>
-
-      <!-- Bloque Vehículos -->
-      <div class="cart-block">
-        <div class="cart-block-header">
-          <div class="cart-block-title">
-            <div class="cart-block-icon">🚗</div>
-            <span id="cartVehiclesTitle">Tu vehículo</span>
-          </div>
-          <a class="cart-edit" onclick="editVehicles()">Editar</a>
-        </div>
-        <div id="cartVehicles"></div>
       </div>
 
       <!-- Bloque Cliente -->
@@ -1562,6 +1551,18 @@
           <div class="cart-customer-row"><span class="ico">✉</span><span class="val" id="cartCustomerEmail">—</span></div>
           <div class="cart-customer-row"><span class="ico">☎</span><span class="val" id="cartCustomerPhone">—</span></div>
         </div>
+      </div>
+
+      <!-- Bloque Vehículos -->
+      <div class="cart-block">
+        <div class="cart-block-header">
+          <div class="cart-block-title">
+            <div class="cart-block-icon">🚗</div>
+            <span id="cartVehiclesTitle">Tu vehículo</span>
+          </div>
+          <a class="cart-edit" onclick="editVehicles()">Editar</a>
+        </div>
+        <div id="cartVehicles"></div>
       </div>
 
       <!-- Consents -->

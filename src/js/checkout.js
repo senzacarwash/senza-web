@@ -365,24 +365,7 @@ function updateCartCTA() {
 }
 
 // ===== Edit handlers from Resumen blocks =====
-function editPlan() {
-  if (checkoutMode === 'multi') {
-    // Permitir cambiar plan/cantidad — re-abrir step 0 (calc)
-    multiCalcDone = false;
-    coCalcCount = multiCarCount;
-    var calcCount = document.getElementById('coCalcCount');
-    var calcPlan = document.getElementById('coCalcPlan');
-    if (calcCount) calcCount.textContent = multiCarCount;
-    if (calcPlan) calcPlan.value = selectedPlan;
-    updateCoCalc();
-    renderProgress();
-    goToStep(0);
-  } else {
-    // Personal: el plan se elige desde la home; cerrar para que el cliente elija
-    closeCheckout();
-  }
-}
-
+// TEMPORAL — editPlan removido. Pendiente: overlay con plan picker (issue #25, decisión 29 Abr).
 function editVehicles() { goToStep(2); }
 function editCustomer() { goToStep(1); }
 
@@ -648,7 +631,6 @@ window.renderProgress = renderProgress;
 window.updateProgressUI = updateProgressUI;
 window.renderResumen = renderResumen;
 window.updateCartCTA = updateCartCTA;
-window.editPlan = editPlan;
 window.editVehicles = editVehicles;
 window.editCustomer = editCustomer;
 window.goToPayment = goToPayment;
